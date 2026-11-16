@@ -21,7 +21,7 @@ def wood_swatch(seed,lo,hi,gloss):
 
 def hero():
     # Wardrobe wall: sage-green matte PU shutters, loft, brass profile handles, oak floor, soft daylight.
-    sh=[]; x0=520; W=230; gap=6
+    sh=[]; x0=770; W=186; gap=6
     for i in range(4):
         x=x0+i*(W+gap)
         sh.append(f'<rect x="{x}" y="250" width="{W}" height="560" rx="2" fill="url(#sage)"/>')
@@ -39,11 +39,11 @@ def hero():
 <linearGradient id="refl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b8873" stop-opacity="0.25"/><stop offset="1" stop-color="#7b8873" stop-opacity="0"/></linearGradient>
 </defs>
 <rect width="1600" height="1000" fill="url(#wall)"/>
-<rect x="500" y="100" width="980" height="730" fill="#1d1b19"/>
+<rect x="752" y="100" width="798" height="730" fill="#1d1b19"/>
 {''.join(sh)}
-<rect x="500" y="810" width="980" height="20" fill="#2b2824"/>
+<rect x="752" y="810" width="798" height="20" fill="#2b2824"/>
 <g transform="translate(0,830)"><rect x="-60" width="1720" height="200" filter="url(#w11)"/><rect width="1600" height="170" fill="url(#shade)"/></g>
-<rect x="520" y="832" width="938" height="90" fill="url(#refl)"/>
+<rect x="770" y="832" width="762" height="90" fill="url(#refl)"/>
 <rect width="1600" height="1000" fill="url(#light)"/>
 </svg>'''
 

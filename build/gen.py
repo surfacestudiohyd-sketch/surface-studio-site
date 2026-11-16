@@ -28,7 +28,7 @@ cli=''.join('<div style="padding: 30px; border-radius: 18px; background: #1D1D23
 def anatomy(title,color,rows):
     li=''.join('<li style="display: flex; gap: 16px; align-items: baseline; padding: 13px 18px; border-radius: 12px; background: #24242B"><span style="font-weight: 700; color: %s; font-size: 14px">%02d</span><span style="font-size: 15px; line-height: 1.5"><span style="font-weight: 600">%s</span><span style="color: #A9A9B3"> — %s</span></span></li>\n'%(color,i+1,a,b) for i,(a,b) in enumerate(rows))
     return '<div style="background: #1D1D23; border: 1px solid #2A2A32; border-radius: 22px; padding: 32px"><p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #A9A9B3">Anatomy of</p><h3 style="margin: 6px 0 22px; font-size: 24px; font-weight: 700">%s</h3><ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">\n%s</ol></div>\n'%(title,li)
-an=anatomy('a PU painted shutter','#FF9A3C',[('Board','smooth, stable MDF or HDHMR'),('Sanding &amp; edge sealing','faces and edges closed off'),('PU sealer &amp; primer','built up and sanded level'),('Colour coats','shade-matched PU'),('Finish coat','matt, gloss or a clear coat for depth')])+anatomy('a PU polish','#C98BF0',[('Core','natural wood or veneer'),('Sanding','the grain opened and smoothed'),('Filling','pores, holes and cracks made good'),('PU sealer','two coats, sanded between'),('Clear topcoat','matt, gloss or natural "invisible"')])
+an=anatomy('a PU painted shutter','#FF9A3C',[('Board','smooth, stable MDF or HDHMR'),('Sanding &amp; edge sealing','faces and edges closed off'),('PU sealer &amp; primer','built up and sanded level'),('Colour coats','shade-matched PU'),('Finish coat','matte, glossy or a clear coat for depth')])+anatomy('a PU polish','#C98BF0',[('Core','natural wood or veneer'),('Sanding','the grain opened and smoothed'),('Filling','pores, holes and cracks made good'),('PU sealer','two coats, sanded between'),('Clear topcoat','matte, glossy or natural "invisible"')])
 td='padding: 15px 22px; border-bottom: 1px solid #2A2A32'
 rows=[('Durability','Highest of the three','Lower, can chip','Basic'),('Gloss over time','Holds its sheen','Tends to dull','Tends to fade'),('Yellowing &amp; cracking','Resists both','More prone','More prone'),('Moisture &amp; stains','Strong resistance','Moderate','Basic'),('Flexibility','Moves with the board','Stiffer film','Stiffer film')]
 tb=''.join('<tr><th scope="row" style="%s; font-weight: 600">%s</th><td style="%s; background: #24211F">%s</td><td style="%s; color: #A9A9B3">%s</td><td style="%s; color: #A9A9B3">%s</td></tr>\n'%(td,a,td,b,td,c,td,d) for a,b,c,d in rows)
@@ -57,7 +57,7 @@ faqs=[('What is the difference between PU paint and PU polish?','PU paint is pig
 ('Can you match an existing shade?','Yes. Give us a RAL or NCS code, a laminate or a physical sample, and we will match it and share a sample panel for approval before production.'),
 ('Do you finish panels for modular kitchen factories?','Yes. Share your factory panel list or cutlist. Every panel is tracked by its barcode, finished as specified and returned in batches matched to your project.'),
 ('Can PU be applied over laminate?','Yes, once the laminate is properly prepared with a specialised adhesion primer. Any peeling or swollen laminate has to be repaired first.'),
-('Can old teak doors be re-polished with PU?','Yes. The old polish is sanded back, holes and cracks are filled, two coats of PU sealer go on, and the door is finished with a clear matt or gloss topcoat. Old teak often shows a richer grain afterwards.'),
+('Can old teak doors be re-polished with PU?','Yes. The old polish is sanded back, holes and cracks are filled, two coats of PU sealer go on, and the door is finished with a clear matte or glossy topcoat. Old teak often shows a richer grain afterwards.'),
 ('How long does a PU finishing job take?','It depends on the batch size, the finish and the number of coats, and it always includes full curing time. We confirm a delivery date with your quote, and larger projects are delivered in planned batches.')]
 fq=''.join('<details class="ss-faq" style="border-bottom: 1px solid #2A2A32"><summary style="display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 0; min-height: 44px; cursor: pointer; font-size: 18px; font-weight: 600; line-height: 1.4">%s</summary><p style="margin: 0; padding: 0 40px 24px 0; font-size: 15px; line-height: 1.7; color: #A9A9B3">%s</p></details>\n'%(H.escape(q,quote=False),H.escape(a,quote=False)) for q,a in faqs)
 areas=['Bollaram','Miyapur','Bachupally','Ameenpur','Kukatpally','Kondapur','Gachibowli','Madhapur','Jubilee Hills','Banjara Hills','Kokapet','Financial District','Manikonda','Secunderabad','Shamshabad']
@@ -107,6 +107,9 @@ select option{background:#1D1D23;color:#F4F4F6}
 .cl-btn:hover{border-color:#FF9A3C;color:#F4F4F6}
 .cl-primary{border:0;background:linear-gradient(90deg,#C2410C,#A532C2);color:#fff}
 @media print{body *{visibility:hidden !important}#cl-result,#cl-result *{visibility:visible !important;color:#000 !important;background:#fff !important;border-color:#bbb !important}#cl-result{position:absolute;left:0;top:0;width:100%;padding:24px}.cl-actions{display:none !important}#cl-result details{display:block}#cl-result details>div{max-height:none !important;overflow:visible !important}}
+.ss-desk{display:block}
+@media (max-width:900px){.ss-desk{display:none}.ss-hero-ov{background:linear-gradient(180deg,rgba(18,18,22,.68),rgba(18,18,22,.88)) !important}}
+@media (max-width:600px){.ss-shades{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:10px !important}}
 .ss-faq summary{list-style:none}
 .ss-faq summary::-webkit-details-marker{display:none}
 .ss-faq summary::after{content:"+";font-size:26px;font-weight:300;color:#FF9A3C;flex:none}
@@ -145,8 +148,8 @@ $NAV
 
 <!-- HERO -->
 <section id="top" style="position: relative; min-height: 660px; display: flex; align-items: center">
-<img src="/_blob/$HEROIMG" width="1600" height="1000" alt="Wardrobe with sage-green matte PU shutters and brass handles" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 75% 50%">
-<div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18,18,22,0.95) 0%, rgba(18,18,22,0.78) 36%, rgba(18,18,22,0.12) 72%, rgba(18,18,22,0.05) 100%)"></div>
+<img src="/_blob/$HEROIMG" width="1600" height="1000" alt="Wardrobe with sage-green matte PU shutters and brass handles" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 100% 50%">
+<div aria-hidden="true" class="ss-hero-ov" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18,18,22,0.96) 0%, rgba(18,18,22,0.86) 34%, rgba(18,18,22,0.10) 60%, rgba(18,18,22,0) 100%)"></div>
 <div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: linear-gradient(0deg,#121216,rgba(18,18,22,0))"></div>
 <div style="position: relative; max-width: 1200px; width: 100%; margin: 0 auto; padding: 96px 24px 110px; box-sizing: border-box">
 <p style="margin: 0 0 22px; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #FF9A3C">PU paint &amp; polish studio&nbsp;·&nbsp;Hyderabad</p>
@@ -199,6 +202,7 @@ $CHECKS
 <h2 style="$H2">Finishing expertise</h2>
 <p style="margin: 18px 0 0; font-size: 17px; color: #A9A9B3; line-height: 1.6; max-width: 380px">Five services, one standard. Sprayed by hand, sanded between coats and cured with patience.</p>
 <a href="#instant-quote" style="margin-top: 28px; display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid #3A3A44; font-weight: 600; font-size: 15px">Ask for a quote</a>
+<img class="ss-desk" src="/_blob/2ae73c91fd232b9dd80207c8dd933762" width="1200" height="960" alt="Teak veneer door finished in clear glossy PU polish" style="margin-top: 40px; width: 100%; max-width: 420px; height: auto; border-radius: 18px; border: 1px solid #2A2A32">
 </div>
 <div style="border-bottom: 1px solid #2A2A32">
 $SVC</div>
@@ -210,7 +214,7 @@ $SVC</div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 40px 64px; align-items: start">
 <div>
 <p style="$EYE">Instant quote</p>
-<h2 id="iq-title" style="$H2">Upload your cutlist. <span style="$G">Get a price.</span></h2>
+<h2 id="iq-title" style="$H2">Upload your cutlist.<br><span style="$G">Get a price.</span></h2>
 <p style="margin: 18px 0 0; font-size: 17px; line-height: 1.65; color: #A9A9B3; max-width: 440px">Drop in the panel list from your factory or designer and see an estimate in seconds, worked out from our current Sirca, ICA and Axalta rates.</p>
 <ol style="margin: 30px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px">
 <li style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #3A3A44; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #FF9A3C">1</span><span><span style="display: block; font-weight: 600; font-size: 16px">Upload the cutlist</span><span style="display: block; margin-top: 4px; font-size: 14px; line-height: 1.6; color: #A9A9B3">Excel (.xlsx) or CSV with length, width and quantity columns. Factory lists with CLENG / CWIDTH / CNT work as they are.</span></span></li>
@@ -255,7 +259,7 @@ $CLI</div>
 <div>
 <p style="$EYE">PU, explained</p>
 <h2 style="$H2">What is a PU finish?</h2>
-<p style="margin: 22px 0 0; font-size: 18px; line-height: 1.65; color: #D6D6DC">PU is short for polyurethane: a two-component coating, mixed with a hardener and sprayed in thin layers, that cures into a tough, smooth film in matt or gloss.</p>
+<p style="margin: 22px 0 0; font-size: 18px; line-height: 1.65; color: #D6D6DC">PU is short for polyurethane: a two-component coating, mixed with a hardener and sprayed in thin layers, that cures into a tough, smooth film in matte or glossy.</p>
 <p style="margin: 14px 0 0; font-size: 16px; line-height: 1.7; color: #A9A9B3">That film resists scratches, stains and moisture far better than traditional polishes, which is why PU has become the standard for premium kitchens, wardrobes and doors. Pigmented, it is PU paint. Clear, over wood or veneer, it is PU polish.</p>
 </div>
 <div style="background: #1D1D23; border: 1px solid #2A2A32; border-radius: 22px; padding: 30px">

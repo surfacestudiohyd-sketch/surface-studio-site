@@ -5,7 +5,7 @@ import json, urllib.parse
 RATES = json.load(open('/home/claude/build/rates.json'))['rates']
 WA = 'https://wa.me/919505969558?text='
 BLOB = {
-    'hero': '104b5cdcfad2ef867be56049edc28d6a', 'navy': '6d7e8d05bc8e79f4f837b821a91df98b', 'door': '2ae73c91fd232b9dd80207c8dd933762',
+    'hero': '6d8a7fb943b1b5dd089ceffb779d040a', 'navy': '6d7e8d05bc8e79f4f837b821a91df98b', 'door': '2ae73c91fd232b9dd80207c8dd933762',
     'teak': '4e861e5150f1535f7aa084e7ad018846', 'walnut': 'cee414d04ae558554a9430262b109e93', 'white-oak': 'b35683588ded28a6fffc8b2ad38d49c4',
     'smoked-oak': '09e26507dd977680686813713a3b7ba4', 'mahogany': 'db466db4c5dbccbf6c02c4ee0da8c9d0', 'wenge': '8be97defdd7c84a4418bfabdfd7b66ec',
 }
@@ -79,9 +79,9 @@ def card(bg, name, meta, asktext, img=None):
               f'<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0) 38%, rgba(255,255,255,{0.3 if shiny else 0.05}) 47%, rgba(255,255,255,0) 56%)"></span>')
     return (f'<li style="border: 1px solid #2A2A32; border-radius: 16px; background: #1D1D23; overflow: hidden">'
             f'<div style="position: relative">{sw}</div>'
-            f'<div style="padding: 12px 14px 4px"><p style="margin: 0; font-weight: 600; font-size: 15px">{name}</p>'
-            f'<p style="margin: 3px 0 0; font-size: 13px; color: #A9A9B3">{meta}</p>'
-            f'<a href="{ask(asktext)}"$EXT style="display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 600; color: #FF9A3C">Ask on WhatsApp</a></div></li>\n')
+            f'<div style="padding: 10px 10px 2px"><p style="margin: 0; font-weight: 600; font-size: 14px; line-height: 1.25">{name}</p>'
+            f'<p style="margin: 3px 0 0; font-size: 12px; line-height: 1.35; color: #A9A9B3">{meta}</p>'
+            f'<a href="{ask(asktext)}"$EXT style="display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 600; color: #FF9A3C" aria-label="Ask about {name} on WhatsApp">Enquire</a></div></li>\n')
 
 SOLID = [('#F1ECE1', 'Pure White', 'RAL 9010'), ('#E9E0D2', 'Cream', 'RAL 9001'), ('#E1D4BF', 'Light Ivory', 'RAL 1015'),
          ('#CBD0CC', 'Light Grey', 'RAL 7035'), ('#B5B0A1', 'Silk Grey', 'RAL 7044'), ('#383E42', 'Anthracite', 'RAL 7016'),
@@ -96,15 +96,15 @@ METAL = [('linear-gradient(135deg,#7a5a1e,#e8c46a 45%,#9a742a 70%,#f2d68c)', 'Go
 WOOD = [('teak', 'Natural Teak', 'Natural · Glossy'), ('white-oak', 'White Oak', 'Natural · Matte'),
         ('walnut', 'Walnut', 'Coloured · Glossy'), ('smoked-oak', 'Smoked Oak', 'Coloured · Matte'),
         ('mahogany', 'Mahogany', 'Coloured · Glossy'), ('wenge', 'Wenge', 'Coloured · Matte')]
-GRID = 'margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 14px'
+GRID = 'margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 14px" class="ss-shades'
 H3 = 'font-size: 20px; font-weight: 600'
 
 tiles = (f'<h3 style="margin: 0 0 6px; {H3}">Solid PU colours</h3><p style="margin: 0 0 16px; font-size: 14px; color: #A9A9B3">PU Paint · Sirca, ICA or Axalta · matte or glossy · from ₹{PAINT_FROM}/sq ft</p>'
-         f'<ul style="{GRID}">\n' + ''.join(card(b, n, c + ' · Matte or Glossy', f'{n} ({c}) PU paint') for b, n, c in SOLID) + '</ul>\n')
+         f'<ul style="{GRID}">\n' + ''.join(card(b, n, c, f'{n} ({c}) PU paint') for b, n, c in SOLID) + '</ul>\n')
 tiles += (f'<h3 style="margin: 40px 0 6px; {H3}">Metallic &amp; pearl</h3><p style="margin: 0 0 16px; font-size: 14px; color: #A9A9B3">Axalta PU Paint · from ₹{METAL_FROM}/sq ft</p>'
-          f'<ul style="{GRID}">\n' + ''.join(card(b, n, 'Axalta · ' + f, f'{n} {f.lower()} PU (Axalta)') for b, n, f in METAL) + '</ul>\n')
+          f'<ul style="{GRID}">\n' + ''.join(card(b, n, f, f'{n} {f.lower()} PU (Axalta)') for b, n, f in METAL) + '</ul>\n')
 tiles += (f'<h3 style="margin: 40px 0 6px; {H3}">PU polish wood tones</h3><p style="margin: 0 0 16px; font-size: 14px; color: #A9A9B3">PU Polish on veneer or solid wood · natural or tinted · from ₹{POLISH_FROM}/sq ft</p>'
-          f'<ul style="{GRID}">\n' + ''.join(card('', n, 'PU Polish · ' + m, f'{n} PU polish ({m})', img=BLOB[k]) for k, n, m in WOOD) + '</ul>\n')
+          f'<ul style="{GRID}">\n' + ''.join(card('', n, m, f'{n} PU polish ({m})', img=BLOB[k]) for k, n, m in WOOD) + '</ul>\n')
 
 sheen = [('Matte', 'Soft, low-glare, hides fingerprints best', 'linear-gradient(135deg,#2B2B31 60%,#34343B)', 0),
          ('Glossy', 'Deep and reflective, easy to wipe clean', 'linear-gradient(135deg,#1A1A1E 42%,#9A9AA6 51%,#1A1A1E 60%)', 1)]

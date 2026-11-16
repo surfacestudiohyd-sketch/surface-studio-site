@@ -5,7 +5,7 @@ outdir = os.path.dirname(os.path.abspath(out))
 body = src.split('<x-dc>')[1].split('</x-dc>')[0]
 helmet = re.search(r'<helmet>(.*?)</helmet>', body, re.S).group(1)
 body = re.sub(r'<helmet>.*?</helmet>', '', body, flags=re.S)
-blobs = {'104b5cdcfad2ef867be56049edc28d6a': 'images/hero-pu-wardrobe.jpg', '6d7e8d05bc8e79f4f837b821a91df98b': 'images/gloss-navy-pu-panel.jpg', '2ae73c91fd232b9dd80207c8dd933762': 'images/teak-pu-polish-door.jpg', '4e861e5150f1535f7aa084e7ad018846': 'images/wood-teak.jpg', 'cee414d04ae558554a9430262b109e93': 'images/wood-walnut.jpg', 'b35683588ded28a6fffc8b2ad38d49c4': 'images/wood-white-oak.jpg', '09e26507dd977680686813713a3b7ba4': 'images/wood-smoked-oak.jpg', 'db466db4c5dbccbf6c02c4ee0da8c9d0': 'images/wood-mahogany.jpg', '8be97defdd7c84a4418bfabdfd7b66ec': 'images/wood-wenge.jpg'}
+blobs = {'6d8a7fb943b1b5dd089ceffb779d040a': 'images/hero-pu-wardrobe.jpg', '6d7e8d05bc8e79f4f837b821a91df98b': 'images/gloss-navy-pu-panel.jpg', '2ae73c91fd232b9dd80207c8dd933762': 'images/teak-pu-polish-door.jpg', '4e861e5150f1535f7aa084e7ad018846': 'images/wood-teak.jpg', 'cee414d04ae558554a9430262b109e93': 'images/wood-walnut.jpg', 'b35683588ded28a6fffc8b2ad38d49c4': 'images/wood-white-oak.jpg', '09e26507dd977680686813713a3b7ba4': 'images/wood-smoked-oak.jpg', 'db466db4c5dbccbf6c02c4ee0da8c9d0': 'images/wood-mahogany.jpg', '8be97defdd7c84a4418bfabdfd7b66ec': 'images/wood-wenge.jpg'}
 for k,v in blobs.items(): body = body.replace('/_blob/'+k, v)
 body = body.replace('onSubmit="{{send}}"','id="enquiry"')
 body = body.replace('{{typed}}', '<span id="typed">Precision Coated.</span>')
