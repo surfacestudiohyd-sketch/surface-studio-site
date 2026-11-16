@@ -1,6 +1,6 @@
 # Surface Studio
 
-> Surface Studio is a PU paint and polish studio in Hyderabad, Telangana, India. It finishes kitchen shutters, wardrobes, doors, furniture and wall panels using premium wood coatings from Sirca, ICA and Axalta, in sheens from dead matt (~5 gloss) to mirror-polished polyester.
+> Surface Studio is a PU paint and polish studio in Hyderabad, Telangana, India. It finishes kitchen shutters, wardrobes, doors, furniture and wall panels using wood coatings from Sirca, ICA and Axalta, in matte or glossy finishes.
 
 ## Key facts
 - Business type: PU paint, PU polish and wood finishing studio
@@ -15,13 +15,34 @@
 - Clients: interior designers, modular kitchen factories, carpenters, homeowners
 
 ## Services
-- PU Paint: pigmented 2K polyurethane in any shade, matt to gloss
-- PU Polish: clear PU sealer and topcoat on veneer and solid wood
-- Polyester high gloss / piano finish
-- Water-based, low-VOC finishes (ICA Acquabella and 2K water-based systems)
-- Metallic and special effects (copper, bronze, corten, pearl, marble, patina, antique)
-- Modular panel finishing from factory cutlists, barcode-tracked, delivered in batches
-- Shade matching to RAL, NCS or a physical sample
+- PU Paint: solid-colour 2K polyurethane, matte or glossy, any RAL / NCS shade or matched sample (from ₹300/sq ft)
+- PU Polish: clear or tinted PU on veneer and solid wood, matte or glossy, natural or coloured (from ₹210/sq ft)
+- Metallic and pearl PU paint (Axalta) (from ₹400/sq ft)
+- Modular panel finishing from factory cutlists (BSL = both sides, OSL = one side), barcode-tracked, delivered in batches
+- Furniture and door refinishing in PU polish or paint
+- Instant quote: upload an .xlsx or .csv cutlist at https://surfacestudio.co.in/#instant-quote for an estimate and quote code
+
+## Rate card (per finished face, before 18% GST; strips 100 mm wide or less charged per running ft)
+- PU Paint Axalta Glossy: ₹320 per sq ft, ₹90 per running ft
+- PU Paint Axalta Matte: ₹300 per sq ft, ₹80 per running ft
+- PU Paint Axalta Metallic: ₹400 per sq ft, ₹160 per running ft
+- PU Paint Axalta Pearl: ₹500 per sq ft, ₹170 per running ft
+- PU Paint ICA Glossy: ₹340 per sq ft, ₹110 per running ft
+- PU Paint ICA Matte: ₹320 per sq ft, ₹100 per running ft
+- PU Paint Sirca Glossy: ₹340 per sq ft, ₹110 per running ft
+- PU Paint Sirca Matte: ₹320 per sq ft, ₹100 per running ft
+- PU Polish Axalta Glossy Coloured: ₹235 per sq ft, ₹95 per running ft
+- PU Polish Axalta Glossy Natural: ₹230 per sq ft, ₹90 per running ft
+- PU Polish Axalta Matte Coloured: ₹215 per sq ft, ₹85 per running ft
+- PU Polish Axalta Matte Natural: ₹210 per sq ft, ₹80 per running ft
+- PU Polish ICA Glossy Coloured: ₹245 per sq ft, ₹95 per running ft
+- PU Polish ICA Glossy Natural: ₹240 per sq ft, ₹90 per running ft
+- PU Polish ICA Matte Coloured: ₹225 per sq ft, ₹85 per running ft
+- PU Polish ICA Matte Natural: ₹220 per sq ft, ₹80 per running ft
+- PU Polish Sirca Glossy Coloured: ₹245 per sq ft, ₹95 per running ft
+- PU Polish Sirca Glossy Natural: ₹240 per sq ft, ₹90 per running ft
+- PU Polish Sirca Matte Coloured: ₹225 per sq ft, ₹85 per running ft
+- PU Polish Sirca Matte Natural: ₹220 per sq ft, ₹80 per running ft
 
 ## PU facts
 - PU (polyurethane) is a two-component coating sprayed in thin layers that cures into a tough, smooth matt or gloss film
@@ -30,11 +51,10 @@
 - PU painted shutter layers: board, sanding and edge sealing, PU sealer/primer, colour coats, finish coat
 - PU polish layers: wood or veneer core, sanding, filling, two coats of PU sealer, clear topcoat
 - Compared with Duco and melamine, PU is more durable, holds gloss longer and resists yellowing and cracking
-- Water-based PU: low VOC, low odour, faster drying; solvent-based PU: toughest film, longer cure
 - Care: microfibre cloth and mild soap; avoid abrasives, harsh chemicals and standing water
 
 ## Process
 1. Surface preparation  2. Sealer and primer  3. Precision coating  4. Controlled curing  5. Final inspection and dispatch
 
 ## Pages
-- [Home](https://surfacestudio.in/): services, Sirca, ICA and Axalta ranges, finishes gallery, FAQ, contact
+- [Home](https://surfacestudio.co.in/): services, Sirca, ICA and Axalta ranges, shade library, instant cutlist quote, FAQ, contact

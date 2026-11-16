@@ -20,4 +20,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://surfacestudio.in/sitemap.xml
+Sitemap: https://surfacestudio.co.in/sitemap.xml

@@ -1,0 +1,86 @@
+{
+ "source": "Zoho Books item rates",
+ "gst": 18,
+ "rates": {
+  "paint|Axalta|Glossy": {
+   "rft": 90.0,
+   "sft": 320.0
+  },
+  "paint|Axalta|Matte": {
+   "rft": 80.0,
+   "sft": 300.0
+  },
+  "paint|Axalta|Metallic": {
+   "rft": 160.0,
+   "sft": 400.0
+  },
+  "paint|Axalta|Pearl": {
+   "rft": 170.0,
+   "sft": 500.0
+  },
+  "paint|ICA|Glossy": {
+   "rft": 110.0,
+   "sft": 340.0
+  },
+  "paint|ICA|Matte": {
+   "rft": 100.0,
+   "sft": 320.0
+  },
+  "paint|Sirca|Glossy": {
+   "rft": 110.0,
+   "sft": 340.0
+  },
+  "paint|Sirca|Matte": {
+   "rft": 100.0,
+   "sft": 320.0
+  },
+  "polish|Axalta|Glossy|Coloured": {
+   "rft": 95.0,
+   "sft": 235.0
+  },
+  "polish|Axalta|Glossy|Natural": {
+   "rft": 90.0,
+   "sft": 230.0
+  },
+  "polish|Axalta|Matte|Coloured": {
+   "rft": 85.0,
+   "sft": 215.0
+  },
+  "polish|Axalta|Matte|Natural": {
+   "rft": 80.0,
+   "sft": 210.0
+  },
+  "polish|ICA|Glossy|Coloured": {
+   "rft": 95.0,
+   "sft": 245.0
+  },
+  "polish|ICA|Glossy|Natural": {
+   "rft": 90.0,
+   "sft": 240.0
+  },
+  "polish|ICA|Matte|Coloured": {
+   "rft": 85.0,
+   "sft": 225.0
+  },
+  "polish|ICA|Matte|Natural": {
+   "rft": 80.0,
+   "sft": 220.0
+  },
+  "polish|Sirca|Glossy|Coloured": {
+   "rft": 95.0,
+   "sft": 245.0
+  },
+  "polish|Sirca|Glossy|Natural": {
+   "rft": 90.0,
+   "sft": 240.0
+  },
+  "polish|Sirca|Matte|Coloured": {
+   "rft": 85.0,
+   "sft": 225.0
+  },
+  "polish|Sirca|Matte|Natural": {
+   "rft": 80.0,
+   "sft": 220.0
+  }
+ }
+}

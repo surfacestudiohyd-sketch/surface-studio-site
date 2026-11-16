@@ -1,4 +1,6 @@
 import json, html as H
+import sys; sys.path.insert(0,"/home/claude/build")
+from products import services, panels, tiles, sheen, BLOB, PAINT_FROM, POLISH_FROM
 MAPS='https://www.google.com/maps/search/?api=1&amp;query=Surface%20Studio%20Bollaram&amp;query_place_id=ChIJqzA2LwCNyzsREJtpRkI6IGA'
 REVIEW='https://search.google.com/local/writereview?placeid=ChIJqzA2LwCNyzsREJtpRkI6IGA'
 EXT=' target="_blank" rel="noopener noreferrer"'
@@ -16,12 +18,6 @@ WA='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentC
 LOGO='<span>SURFACE</span><span style="display: flex; align-items: center; gap: 2px">STUDI<span style="display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: linear-gradient(135deg,#FF8A1F,#B44CE6); margin-top: 1px"></span></span>'
 chips=lambda xs,st=CHIP:'\n'.join('<span style="%s">%s</span>'%(st,x) for x in xs)
 
-services=[('PU Paint','Solid-colour 2K polyurethane for MDF and HDHMR shutters. Any shade, from dead matt to full gloss, with a hard, scratch-resistant film.','Kitchens · wardrobes · wall panels'),
-('PU Polish','Clear sealer and topcoat systems for veneer and solid wood. They protect the grain and let it show: natural, open-pore or full-fill.','Veneer · teak doors · furniture'),
-('Polyester High Gloss','Thick-build polyester, rubbed and buffed to a mirror, piano-style finish.','Statement wardrobes · bars · feature panels'),
-('Water-based &amp; Low-VOC','Low-odour water-based finishes with the toughness of 2K systems, for occupied homes and tight timelines.','Bedrooms · children\'s rooms · renovations'),
-('Metallics &amp; Special Effects','Copper, bronze, corten, pearl, marble and patina effects, sampled and approved before production.','Feature walls · islands · display units'),
-('Modular Panel Finishing','Send your factory cutlist. Every panel is barcode-tracked, finished as specified and returned in batches matched to your project.','Modular factories · interior firms')]
 svc=''.join('<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 12px; padding: 26px 0; border-top: 1px solid #2A2A32"><span style="font-size: 14px; font-weight: 700; color: #FF9A3C; padding-top: 5px">%02d</span><div><h3 style="margin: 0; font-size: 22px; font-weight: 600">%s</h3><p style="margin: 8px 0 0; font-size: 15px; line-height: 1.65; color: #A9A9B3; max-width: 560px">%s</p><p style="margin: 10px 0 0; font-size: 13px; letter-spacing: 0.04em; color: #C9C9D1">%s</p></div></div>\n'%(i+1,t,d,b) for i,(t,d,b) in enumerate(services))
 
 clients=[('Interior designers &amp; architects','Send a drawing and a reference. We sample the finish on a panel for your client to approve, then match it across the whole project.'),
@@ -45,45 +41,19 @@ for i,(n,f,_) in enumerate(B):
     tabs+='<sc-if value="{{%s}}" hint-placeholder-val="{{ %s }}">\n'%(f,'true' if i==0 else 'false')
     for j,(m,_,pk) in enumerate(B): tabs+='<button type="button" role="tab" aria-selected="%s" onClick="{{%s}}" style="%s">%s</button>\n'%('true' if i==j else 'false',pk,ON if i==j else OFF,m)
     tabs+='</sc-if>\n'
-def panel(flag,first,tint,name,sub,body,best,items):
-    it=''.join('<div style="background: #1D1D23; border: 1px solid #2A2A32; border-radius: 16px; padding: 20px"><p style="margin: 0; font-weight: 600; font-size: 16px">%s</p><p style="margin: 6px 0 0; font-size: 14px; line-height: 1.55; color: #A9A9B3">%s</p></div>\n'%x for x in items)
-    return '''<sc-if value="{{%s}}" hint-placeholder-val="{{ %s }}">
-<div style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%%, 440px), 1fr)); gap: 20px">
-<div style="background: linear-gradient(160deg,%s 0%%,#1D1D23 60%%); border: 1px solid #2A2A32; border-radius: 22px; padding: 38px">
-<h3 style="margin: 0; font-size: 44px; line-height: 1.1; font-weight: 800; letter-spacing: 0.16em">%s</h3>
-<p style="margin: 6px 0 0; font-size: 14px; color: #A9A9B3">%s</p>
-<p style="margin: 26px 0 0; font-size: 17px; line-height: 1.7; color: #D6D6DC">%s</p>
-<p style="margin: 20px 0 0; font-size: 14px; color: #A9A9B3"><span style="color: #F4F4F6; font-weight: 600">Best for:</span> %s</p>
-</div>
-<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
-%s</div>
-</div>
-</sc-if>
-'''%(flag,first,tint,name,sub,body,best,it)
-panels=panel('isSirca','true','#24201D','SIRCA','Sirca S.p.A. · Italy',"Classic Italian polyurethane, built for interiors that see daily use. Sirca's 2K PU sealers and topcoats give a dense, even film with excellent clarity. It is our go-to for kitchens and wardrobes that need to look new for a long time.",'kitchen shutters, wardrobes, TV units, doors',[('2K PU Sealers','Fill and level the grain for a flawless base.'),('PU Topcoats','Clear and pigmented, glossy through matt.'),('Acrylic PU','Non-yellowing, for whites and pale woods.'),('Polyester','High-build for mirror and piano gloss.'),('Stains','Walnut, teak, wenge and custom tones.'),('Special Effects','Metallic, pearl and textured finishes.')])
-panels+=panel('isIca','false','#211D26','ICA','ICA Group · Civitanova Marche, Italy · since 1971',"A pioneer of water-based wood coatings since 1983. ICA brings us ultra-matt protection, antique effects and eco-friendly finishes that do not compromise on hardness.",'luxury veneers, low-odour homes, exterior wood, effect finishes',[('Finezza PU','Premium polyurethane for interior wood.'),('Finezza Acrylic','Crystal-clear, non-yellowing protection.'),('Acquabella','Water-based, low-odour, eco-friendly.'),('Antique Armonie','Aged, hand-worn decorative effects.'),('Polyester &amp; Gloss','Pigmented and clear high-gloss systems.'),('Exterior Wood','UV, water and anti-yellowing protection.')])
-panels+=panel('isAxalta','false','#1F2329','AXALTA','Axalta Coating Systems · global coatings company',"One of the world's major coatings makers, known for automotive-grade colour and tough industrial finishes. Its wood systems come in both waterborne and solvent-based technology. We use them when a project needs exact colour, deep gloss and a hard-wearing film.",'solid-colour shutters, high-gloss fronts, metallic shades, commercial interiors',[('PU Primers &amp; Sealers','A level, well-bonded base for colour.'),('PU Topcoats','Pigmented and clear, matt through gloss.'),('Waterborne Systems','Low-emission, built to match solvent durability.'),('Solvent-based Clears','Strong flow, levelling and clarity.'),('Stains &amp; Glazes','Colour and depth for natural wood.'),('Colour Matching','Precise shades, repeatable batch to batch.')])
 
 CAP='position: absolute; inset: auto 0 0 0; padding: 70px 22px 22px; background: linear-gradient(0deg,rgba(10,10,12,0.92),rgba(10,10,12,0))'
 TILE='position: relative; border-radius: 18px; overflow: hidden; aspect-ratio: 1 / 1; border: 1px solid #2A2A32'
 def cap(a,b): return '<div style="%s"><p style="margin: 0; font-weight: 600; font-size: 19px">%s</p><p style="margin: 4px 0 0; font-size: 14px; color: #C9C9D1">%s</p></div>'%(CAP,a,b)
-tiles='<div class="ss-tile" style="%s"><img class="ss-img" src="/_blob/029ef0b2348f9cc381a7ab24a818acdb" width="1200" height="782" alt="Obsidian matte textured surface" style="width: 100%%; height: 100%%; object-fit: cover; display: block; filter: brightness(1.350)">%s</div>\n'%(TILE,cap('Obsidian Matte','Dead-flat PU · 5 gloss'))
-tiles+='<div class="ss-tile" style="%s"><img class="ss-img" src="/_blob/61fb86cb385f3b9847f456021b504df7" width="1200" height="778" alt="Liquid copper metallic finish being sprayed" style="width: 100%%; height: 100%%; object-fit: cover; object-position: 30%% 50%%; display: block">%s</div>\n'%(TILE,cap('Liquid Copper','Reactive metallic effect'))
-tiles+='<div class="ss-tile" style="%s; background: radial-gradient(120%% 80%% at 30%% 15%%, #4A4A55 0%%, #18181D 38%%, #050506 100%%)"><div class="ss-img" aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255,255,255,0) 35%%, rgba(255,255,255,0.16) 45%%, rgba(255,255,255,0) 55%%)"></div>%s</div>\n'%(TILE,cap('Piano Black','Polyester mirror gloss'))
-tiles+='<div class="ss-tile" style="%s; background: linear-gradient(160deg,#8C6A45 0%%,#5B4129 55%%,#2E2014 100%%)"><div class="ss-img" aria-hidden="true" style="position: absolute; inset: 0; background: repeating-linear-gradient(92deg, rgba(255,255,255,0.07) 0px, rgba(255,255,255,0) 2px, rgba(0,0,0,0.08) 4px, rgba(0,0,0,0) 7px)"></div>%s</div>\n'%(TILE,cap('Brushed Bronze','Directional metallic'))
-tiles+='<div class="ss-tile" style="%s; background: linear-gradient(150deg,#F4F1EA 0%%,#DDD8CE 60%%,#C4BEB2 100%%)"><div class="ss-img" aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(120deg, rgba(255,255,255,0) 30%%, rgba(255,255,255,0.75) 44%%, rgba(255,255,255,0) 58%%)"></div>%s</div>\n'%(TILE,cap('Pearl Ivory','Non-yellowing acrylic PU'))
-tiles+='<div class="ss-tile" style="%s; background: linear-gradient(160deg,#6B4A2F 0%%,#4A3220 50%%,#2F1F13 100%%)"><div class="ss-img" aria-hidden="true" style="position: absolute; inset: 0; background: repeating-linear-gradient(178deg, rgba(0,0,0,0.16) 0px, rgba(0,0,0,0) 3px, rgba(255,255,255,0.04) 9px, rgba(0,0,0,0) 17px)"></div>%s</div>\n'%(TILE,cap('Natural Walnut','Open-pore clear PU polish'))
-sheen=[('Dead Matt','~5 gloss','#2B2B31',0),('Matt','~10–20 gloss','linear-gradient(135deg,#2B2B31 60%,#34343B)',0),('Satin','~30–40 gloss','linear-gradient(135deg,#2B2B31 45%,#3E3E46 60%,#2B2B31 75%)',0),('Semi Gloss','~60 gloss','linear-gradient(135deg,#25252A 40%,#55555F 55%,#25252A 68%)',0),('High Gloss','90+ gloss','linear-gradient(135deg,#1A1A1E 42%,#8A8A96 52%,#1A1A1E 60%)',0),('Mirror','Polyester, buffed','linear-gradient(135deg,#0B0B0D 44%,#E6E6EE 50%,#0B0B0D 56%)',1)]
 sh=''.join('<div style="border-radius: 14px; border: 1px solid %s; overflow: hidden"><div style="height: 64px; background: %s"></div><div style="padding: 12px 16px; background: #1D1D23"><p style="margin: 0; font-weight: 600; font-size: 15px">%s</p><p style="margin: 4px 0 0; font-size: 13px; color: #A9A9B3">%s</p></div></div>\n'%('#FF8A1F' if hl else '#2A2A32',bg,a,b) for a,b,bg,hl in sheen)
 steps=[('Surface Preparation','Panels inspected, edges checked, sanded and de-dusted for clean adhesion.'),('Sealer &amp; Primer','High-build sealer coats, sanded between layers until the base is level.'),('Precision Coating','Shade-matched topcoat, sprayed in a dust-managed space.'),('Controlled Curing','Full cure time respected, so the film reaches its rated hardness.'),('Final Perfection','Polished, inspected under light, wrapped and dispatched by batch.')]
 st=''.join('<li style="position: relative; border-top: 2px solid #2A2A32; padding: 26px 24px 0 0"><span aria-hidden="true" style="position: absolute; top: -8px; left: 0; width: 14px; height: 14px; border-radius: 50%%; background: linear-gradient(135deg,#FF8A1F,#B44CE6)"></span><p style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.12em; color: #FF9A3C">STEP %02d</p><h3 style="margin: 8px 0 8px; font-size: 18px; font-weight: 600">%s</h3><p style="margin: 0; font-size: 14px; line-height: 1.6; color: #A9A9B3">%s</p></li>\n'%(i+1,a,b) for i,(a,b) in enumerate(steps))
-faqs=[('What is the difference between PU paint and PU polish?','PU paint is pigmented: it covers the surface in a solid colour, used on MDF and HDHMR shutters. PU polish is clear: it protects veneer or solid wood while keeping the natural grain visible. Both are available from dead matt to high gloss.'),
-('How much does PU polish cost per sq ft in Hyderabad?','Pricing depends on the coating system, sheen level and whether one or both sides are finished. We quote per sq ft after seeing your drawings or cutlist, so send them over for an exact price.'),
-('Sirca, ICA or Axalta: which is better for my kitchen?','All three suit kitchens. We usually choose Sirca 2K PU for hard-wearing kitchen and wardrobe shutters, ICA for water-based low-odour finishes, ultra-matt looks and antique effects, and Axalta when exact colour and deep gloss matter most. We recommend a system after seeing your material and design.'),
+faqs=[('What is the difference between PU paint and PU polish?','PU paint is pigmented: it covers the surface in a solid colour, used on MDF and HDHMR shutters. PU polish is clear or lightly tinted: it protects veneer or solid wood while keeping the natural grain visible. Both come in matte or glossy.'),
+('How much does PU paint and polish cost per sq ft in Hyderabad?','PU paint starts at ₹%d per sq ft and PU polish at ₹%d per sq ft, per finished face, before 18%% GST. The exact rate depends on the brand and finish. Upload your cutlist in the instant quote for a full estimate.' % (PAINT_FROM, POLISH_FROM)),
+('Sirca, ICA or Axalta: which is better for my kitchen?','All three suit kitchens. Sirca is our usual choice for hard-wearing kitchen and wardrobe shutters, ICA for premium veneer and feature finishes, and Axalta for metallic or pearl fronts and good-value solid colours. We recommend a system after seeing your material and design.'),
 ('Is PU better than Duco or melamine polish?','For most interiors, yes. PU is more durable, keeps its gloss longer and is more flexible, so it is less likely to yellow, fade or crack than Duco or melamine. It costs more, and it needs skilled spray application in a dust-controlled space.'),
 ('Is PU suitable for kitchens and bathroom vanities?','Yes. PU is highly resistant to moisture and stains, so it suits kitchen shutters and vanity units, ideally on HDHMR board with sealed edges. It is not meant for surfaces that sit in standing water.'),
 ('Will a white PU finish turn yellow?','Standard PU can yellow slightly over time. For whites and pale woods we use non-yellowing acrylic PU systems, such as Sirca Acrylic PU or ICA Finezza Acrylic.'),
-('Are water-based finishes as strong as solvent-based PU?',"Two-component water-based coatings are designed to match solvent-based coatings in hardness and chemical resistance, with far lower VOCs and odour. They are a good choice for occupied homes."),
 ('Can you match an existing shade?','Yes. Give us a RAL or NCS code, a laminate or a physical sample, and we will match it and share a sample panel for approval before production.'),
 ('Do you finish panels for modular kitchen factories?','Yes. Share your factory panel list or cutlist. Every panel is tracked by its barcode, finished as specified and returned in batches matched to your project.'),
 ('Can PU be applied over laminate?','Yes, once the laminate is properly prepared with a specialised adhesion primer. Any peeling or swollen laminate has to be repaired first.'),
@@ -127,6 +97,16 @@ select option{background:#1D1D23;color:#F4F4F6}
 .ss-mob{display:none;position:relative}
 .ss-mob summary{list-style:none}
 .ss-mob summary::-webkit-details-marker{display:none}
+.cl-drop:hover,.cl-drop.cl-over{border-color:#FF9A3C !important;background:#1F1A17 !important}
+#cl-drop:has(+ .cl-file:focus-visible){outline:2px solid #FF9A3C;outline-offset:3px}
+select option{background:#1D1D23;color:#F4F4F6}
+.cl-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
+.cl-table th,.cl-table td{padding:8px 10px;border-bottom:1px solid #2A2A32;text-align:left}
+.cl-table th{position:sticky;top:0;background:#24242B;font-weight:600;color:#C9C9D1}
+.cl-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;border:1px solid #3A3A44;background:transparent;color:#F4F4F6;font-family:Outfit,system-ui,sans-serif;font-weight:600;font-size:15px;cursor:pointer;text-decoration:none}
+.cl-btn:hover{border-color:#FF9A3C;color:#F4F4F6}
+.cl-primary{border:0;background:linear-gradient(90deg,#C2410C,#A532C2);color:#fff}
+@media print{body *{visibility:hidden !important}#cl-result,#cl-result *{visibility:visible !important;color:#000 !important;background:#fff !important;border-color:#bbb !important}#cl-result{position:absolute;left:0;top:0;width:100%;padding:24px}.cl-actions{display:none !important}#cl-result details{display:block}#cl-result details>div{max-height:none !important;overflow:visible !important}}
 .ss-faq summary{list-style:none}
 .ss-faq summary::-webkit-details-marker{display:none}
 .ss-faq summary::after{content:"+";font-size:26px;font-weight:300;color:#FF9A3C;flex:none}
@@ -150,11 +130,12 @@ $NAV
 </nav>
 <div style="display: flex; align-items: center; gap: 10px">
 <a class="ss-quote" href="tel:+919505969558" style="font-size: 14px; font-weight: 500; color: #C9C9D1; padding: 0 6px; min-height: 44px; display: inline-flex; align-items: center">+91 95059 69558</a>
-<a href="#contact" style="font-size: 14px; font-weight: 600; padding: 0 20px; border-radius: 999px; color: #FFFFFF; background: $BTN; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">Get a Quote</a>
+<a href="#instant-quote" style="font-size: 14px; font-weight: 600; padding: 0 20px; border-radius: 999px; color: #FFFFFF; background: $BTN; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">Instant Quote</a>
 <details class="ss-mob">
 <summary aria-label="Open menu" style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid #3A3A44; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>
 <nav aria-label="Mobile" style="position: absolute; right: 0; top: 54px; width: 220px; padding: 12px 20px; border-radius: 16px; background: #1D1D23; border: 1px solid #2A2A32; display: flex; flex-direction: column; gap: 4px; font-size: 16px; font-weight: 500; line-height: 2.750">
 $NAV
+<a href="#instant-quote">Instant quote</a>
 <a href="#contact">Contact &amp; location</a>
 </nav>
 </details>
@@ -164,15 +145,15 @@ $NAV
 
 <!-- HERO -->
 <section id="top" style="position: relative; min-height: 660px; display: flex; align-items: center">
-<img src="/_blob/61fb86cb385f3b9847f456021b504df7" width="1200" height="778" alt="Craftsman spray-coating a panel with a metallic copper finish" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 40%">
-<div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18,18,22,0.96) 0%, rgba(18,18,22,0.84) 42%, rgba(18,18,22,0.35) 100%)"></div>
+<img src="/_blob/$HEROIMG" width="1600" height="1000" alt="Wardrobe with sage-green matte PU shutters and brass handles" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 75% 50%">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18,18,22,0.95) 0%, rgba(18,18,22,0.78) 36%, rgba(18,18,22,0.12) 72%, rgba(18,18,22,0.05) 100%)"></div>
 <div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: linear-gradient(0deg,#121216,rgba(18,18,22,0))"></div>
 <div style="position: relative; max-width: 1200px; width: 100%; margin: 0 auto; padding: 96px 24px 110px; box-sizing: border-box">
 <p style="margin: 0 0 22px; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #FF9A3C">PU paint &amp; polish studio&nbsp;·&nbsp;Hyderabad</p>
 <h1 class="ss-h1" style="margin: 0; font-size: clamp(42px, 7vw, 84px); line-height: 1.02; font-weight: 700; letter-spacing: -0.02em; min-height: 2.050em">We Create <br><span style="$G">{{typed}}</span><span class="ss-cursor" aria-hidden="true" style="color: #B44CE6; font-weight: 300"></span></h1>
-<p style="margin: 22px 0 0; max-width: 540px; font-size: 19px; line-height: 1.55; color: #C9C9D1; font-weight: 300">We finish kitchens, wardrobes, doors and furniture in PU, using Sirca, ICA and Axalta coatings. Dead matt to mirror gloss, shade-matched to your sample.</p>
+<p style="margin: 22px 0 0; max-width: 540px; font-size: 19px; line-height: 1.55; color: #C9C9D1; font-weight: 300">We finish kitchens, wardrobes, doors and furniture in PU, using Sirca, ICA and Axalta coatings. Matte or glossy, any shade, matched to your sample.</p>
 <div style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center">
-<a href="#contact" style="display: inline-flex; align-items: center; min-height: 50px; padding: 0 30px; border-radius: 999px; font-weight: 600; font-size: 16px; color: #FFFFFF; background: $BTN">Get a Quote</a>
+<a href="#instant-quote" style="display: inline-flex; align-items: center; min-height: 50px; padding: 0 30px; border-radius: 999px; font-weight: 600; font-size: 16px; color: #FFFFFF; background: $BTN">Upload cutlist for a quote</a>
 <a href="https://wa.me/919505969558"$EXT style="display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 24px; border-radius: 999px; border: 1px solid #55555F; background: rgba(18,18,22,0.5); font-weight: 600; font-size: 16px">$WA WhatsApp us</a>
 <a href="#finishes" style="display: inline-flex; align-items: center; gap: 8px; min-height: 50px; padding: 0 12px; font-weight: 600; font-size: 16px">See finishes <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
 </div>
@@ -197,16 +178,16 @@ $NAV
 <!-- ABOUT -->
 <section id="about" style="$WRAP; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 56px; align-items: center">
 <div>
-<h2 style="margin: 0; font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; font-weight: 700; letter-spacing: -0.02em">Every surface <br><span style="$G">tells a story.</span></h2>
+<h2 style="margin: 0; font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; font-weight: 700; letter-spacing: -0.02em">Every surface <br><span style="color: #FF9A3C">tells a story.</span></h2>
 <p style="margin: 24px 0 0; font-size: 19px; line-height: 1.6; color: #D6D6DC">Surface Studio is a finishing studio dedicated to one thing: surfaces that look and feel exceptional for years.</p>
-<p style="margin: 16px 0 0; font-size: 16px; line-height: 1.7; color: #A9A9B3">We match the coating system to the job: a dead-matt kitchen shutter, a mirror-gloss wardrobe, or an open-grain veneer that should look like nothing was applied at all. You send us panels. We send back finished pieces, ready to install.</p>
+<p style="margin: 16px 0 0; font-size: 16px; line-height: 1.7; color: #A9A9B3">We match the coating system to the job: a matte kitchen shutter, a glossy wardrobe, or an open-grain veneer that should look like nothing was applied at all. You send us panels. We send back finished pieces, ready to install.</p>
 <ul style="margin: 30px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; font-size: 16px; font-weight: 500">
 $CHECKS
 </ul>
 </div>
 <div style="position: relative; border-radius: 22px; overflow: hidden; border: 1px solid #2A2A32; aspect-ratio: 5 / 4">
-<img src="/_blob/fec8263e01c0ca67dcfbe2ea8e3478b8" width="1094" height="1091" alt="Close-up of a deep-textured charcoal finish" style="width: 100%; height: 100%; object-fit: cover; display: block">
-<div style="position: absolute; left: 20px; bottom: 20px; padding: 12px 18px; border-radius: 12px; background: rgba(18,18,22,0.78); backdrop-filter: blur(8px); font-weight: 600; font-size: 15px">Engineered perfection</div>
+<img src="/_blob/$NAVYIMG" width="1200" height="960" alt="Close-up of a deep navy high-gloss PU shutter with a clean sprayed edge" style="width: 100%; height: 100%; object-fit: cover; display: block">
+<div style="position: absolute; left: 20px; bottom: 20px; padding: 12px 18px; border-radius: 12px; background: rgba(18,18,22,0.78); backdrop-filter: blur(8px); font-weight: 600; font-size: 15px">Glossy PU · sprayed, sanded, buffed</div>
 </div>
 </section>
 
@@ -216,11 +197,46 @@ $CHECKS
 <div>
 <p style="$EYE">What we do</p>
 <h2 style="$H2">Finishing expertise</h2>
-<p style="margin: 18px 0 0; font-size: 17px; color: #A9A9B3; line-height: 1.6; max-width: 380px">Six services, one standard. Sprayed by hand, sanded between coats and cured with patience.</p>
-<a href="#contact" style="margin-top: 28px; display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid #3A3A44; font-weight: 600; font-size: 15px">Ask for a quote</a>
+<p style="margin: 18px 0 0; font-size: 17px; color: #A9A9B3; line-height: 1.6; max-width: 380px">Five services, one standard. Sprayed by hand, sanded between coats and cured with patience.</p>
+<a href="#instant-quote" style="margin-top: 28px; display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid #3A3A44; font-weight: 600; font-size: 15px">Ask for a quote</a>
 </div>
 <div style="border-bottom: 1px solid #2A2A32">
 $SVC</div>
+</div>
+</section>
+
+<!-- INSTANT QUOTE -->
+<section id="instant-quote" aria-labelledby="iq-title" style="$WRAP">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 40px 64px; align-items: start">
+<div>
+<p style="$EYE">Instant quote</p>
+<h2 id="iq-title" style="$H2">Upload your cutlist. <span style="$G">Get a price.</span></h2>
+<p style="margin: 18px 0 0; font-size: 17px; line-height: 1.65; color: #A9A9B3; max-width: 440px">Drop in the panel list from your factory or designer and see an estimate in seconds, worked out from our current Sirca, ICA and Axalta rates.</p>
+<ol style="margin: 30px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px">
+<li style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #3A3A44; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #FF9A3C">1</span><span><span style="display: block; font-weight: 600; font-size: 16px">Upload the cutlist</span><span style="display: block; margin-top: 4px; font-size: 14px; line-height: 1.6; color: #A9A9B3">Excel (.xlsx) or CSV with length, width and quantity columns. Factory lists with CLENG / CWIDTH / CNT work as they are.</span></span></li>
+<li style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #3A3A44; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #FF9A3C">2</span><span><span style="display: block; font-weight: 600; font-size: 16px">Pick the finish</span><span style="display: block; margin-top: 4px; font-size: 14px; line-height: 1.6; color: #A9A9B3">PU paint or polish, brand and sheen. Sides are read from BSL / OSL codes when present.</span></span></li>
+<li style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #3A3A44; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #FF9A3C">3</span><span><span style="display: block; font-weight: 600; font-size: 16px">Send us the quote code</span><span style="display: block; margin-top: 4px; font-size: 14px; line-height: 1.6; color: #A9A9B3">Share it on WhatsApp with the file, and we confirm after inspecting the panels.</span></span></li>
+</ol>
+<p style="margin: 28px 0 0; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.6; color: #C9C9D1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9A3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><span>Private by design: your file is read on your own device and is never uploaded to our servers.</span></p>
+</div>
+<div style="border-radius: 24px; border: 1px solid #2A2A32; background: #1D1D23; padding: clamp(22px, 3.4vw, 36px)">
+<label id="cl-drop" for="cl-file" class="cl-drop" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 170px; padding: 24px; box-sizing: border-box; border: 1.5px dashed #4A4A55; border-radius: 18px; background: #17171C; text-align: center; cursor: pointer; color: #FF9A3C">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"></path><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg>
+<span style="font-size: 17px; font-weight: 600; color: #F4F4F6">Choose or drop your cutlist</span>
+<span style="font-size: 13px; color: #A9A9B3">.xlsx or .csv · up to 5 MB</span>
+</label>
+<input id="cl-file" type="file" accept=".xlsx,.csv,.tsv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="cl-file" style="position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden">
+<div style="margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 16px"><p id="cl-status" role="status" aria-live="polite" style="margin: 0; font-size: 14px; color: #A9A9B3">No file chosen yet.</p><button id="cl-sample" type="button" style="border: 0; background: none; padding: 0; min-height: 44px; font-family: Outfit, system-ui, sans-serif; font-size: 14px; color: #FF9A3C; text-decoration: underline; cursor: pointer">Download a sample cutlist</button></div>
+<div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 14px">
+<div><label for="cl-work" style="$LBL">Work</label><select id="cl-work" style="$INP; appearance: auto"><option value="paint">PU Paint</option><option value="polish">PU Polish</option></select></div>
+<div><label for="cl-brand" style="$LBL">Brand</label><select id="cl-brand" style="$INP; appearance: auto"><option>Sirca</option><option>ICA</option><option>Axalta</option></select></div>
+<div><label for="cl-finish" style="$LBL">Finish</label><select id="cl-finish" style="$INP; appearance: auto"><option>Matte</option><option>Glossy</option><option>Metallic</option><option>Pearl</option></select></div>
+<div id="cl-tone-wrap" hidden><label for="cl-tone" style="$LBL">Polish tone</label><select id="cl-tone" style="$INP; appearance: auto"><option>Natural</option><option>Coloured</option></select></div>
+<div><label for="cl-sides" style="$LBL">Sides (if not in list)</label><select id="cl-sides" style="$INP; appearance: auto"><option value="2">Both sides</option><option value="1">One side</option></select></div>
+</div>
+<div id="cl-result" class="cl-result" aria-live="polite" hidden style="margin-top: 22px; padding-top: 22px; border-top: 1px solid #2A2A32"></div>
+<p style="margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: #8E8E99">Metallic and pearl are available with Axalta PU paint. Prefer to talk? <a href="#contact" style="color: #C9C9D1; text-decoration: underline">Send your details</a> and we will call you.</p>
+</div>
 </div>
 </section>
 
@@ -264,8 +280,8 @@ $TB</tbody>
 </div>
 </div>
 <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px">
-<div><h3 style="margin: 0 0 8px; font-size: 19px; font-weight: 600">Water-based PU</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: #A9A9B3">Low VOCs, minimal odour and faster drying. The better choice for occupied homes, bedrooms and anyone sensitive to solvents.</p></div>
-<div><h3 style="margin: 0 0 8px; font-size: 19px; font-weight: 600">Solvent-based PU</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: #A9A9B3">Stronger odour and a longer cure, in exchange for the toughest film. The choice for heavy-use surfaces such as kitchen shutters.</p></div>
+<div><h3 style="margin: 0 0 8px; font-size: 19px; font-weight: 600">One side or both? (OSL / BSL)</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: #A9A9B3">Factory lists mark panels BSL (both sides lacquered) or OSL (one side, laminate behind). We price each face that gets PU, so shutters are usually BSL and carcass sides OSL.</p></div>
+<div><h3 style="margin: 0 0 8px; font-size: 19px; font-weight: 600">Narrow strips per running foot</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: #A9A9B3">Skirtings, fillers and adders 100 mm wide or less are charged per running foot instead of per sq ft, which keeps small parts fairly priced.</p></div>
 <div><h3 style="margin: 0 0 8px; font-size: 19px; font-weight: 600">Caring for a PU finish</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: #A9A9B3">Wipe with a soft microfibre cloth and mild soap. Avoid harsh chemicals, abrasive pads and standing water, and let the finish cure fully before heavy use.</p></div>
 </div>
 </div>
@@ -287,21 +303,15 @@ $PANELS</section>
 <!-- SIGNATURE FINISHES -->
 <section id="finishes" style="background: #17171C; border-top: 1px solid #24242B; border-bottom: 1px solid #24242B">
 <div style="$WRAP">
-<p style="$EYE">Finish library</p>
-<h2 style="$H2">Signature finishes</h2>
-<p style="margin: 14px 0 0; font-size: 17px; color: #A9A9B3">A few favourites. Any of them can be sampled on your own board.</p>
-<div style="margin-top: 44px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 18px">
+<p style="$EYE">Shade library</p>
+<h2 style="$H2">Popular PU shades</h2>
+<p style="margin: 14px 0 0; font-size: 17px; color: #A9A9B3">A few favourites. We can match any RAL or NCS code, or your own sample. Screen colours are approximate, so we always spray a sample panel for approval.</p>
+<div style="margin-top: 44px">
 $TILES</div>
 <div style="margin-top: 56px">
-<p style="margin: 0 0 16px; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: #A9A9B3; font-weight: 600">Choose your sheen</p>
+<p style="margin: 0 0 16px; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: #A9A9B3; font-weight: 600">Matte or glossy</p>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px">
 $SHEEN</div>
-</div>
-<div style="margin-top: 44px">
-<p style="margin: 0 0 16px; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: #A9A9B3; font-weight: 600">PU effects, on request</p>
-<div style="display: flex; flex-wrap: wrap; gap: 10px">
-$EFFECTS
-</div>
 </div>
 </div>
 </section>
@@ -332,7 +342,7 @@ $FAQ</div>
 <!-- CTA -->
 <section id="contact" style="$WRAP">
 <div style="max-width: 720px">
-<h2 style="margin: 0; font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; font-weight: 700; letter-spacing: -0.02em">Let's create something <span style="$G">remarkable.</span></h2>
+<h2 style="margin: 0; font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; font-weight: 700; letter-spacing: -0.02em">Let's create something <span style="color: #FF9A3C">remarkable.</span></h2>
 <p style="margin: 18px 0 0; font-size: 18px; line-height: 1.6; color: #A9A9B3">Tell us what you are finishing. We will recommend the right Sirca, ICA or Axalta system and send a quote.</p>
 </div>
 <div style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; align-items: stretch">
@@ -344,7 +354,7 @@ $FAQ</div>
 <div><label for="q-name" style="$LBL">Your name</label><input id="q-name" name="name" type="text" required maxlength="80" autocomplete="name" placeholder="Full name" style="$INP"></div>
 <div><label for="q-phone" style="$LBL">Phone</label><input id="q-phone" name="phone" type="tel" required maxlength="20" inputmode="tel" pattern="[0-9+\\-\\(\\) ]{8,20}" title="Phone number: 8 to 20 digits; spaces, +, - and brackets allowed" autocomplete="tel" placeholder="Mobile number" style="$INP"></div>
 </div>
-<div style="position: relative"><label for="q-need" style="$LBL">What do you need?</label><select id="q-need" name="need" style="$INP"><option>PU Paint (solid colour)</option><option>PU Polish (clear, on wood or veneer)</option><option>Polyester high gloss</option><option>Metallic or special effect</option><option>Modular panel finishing</option><option>Not sure yet</option></select></div>
+<div style="position: relative"><label for="q-need" style="$LBL">What do you need?</label><select id="q-need" name="need" style="$INP"><option>PU Paint (solid colour)</option><option>PU Polish (clear, on wood or veneer)</option><option>Metallic or pearl PU (Axalta)</option><option>Modular panel finishing</option><option>Not sure yet</option></select></div>
 <div style="position: relative"><label for="q-msg" style="$LBL">Project details</label><textarea id="q-msg" name="msg" rows="4" maxlength="1000" placeholder="Approx. sq ft, material, shade or reference, timeline" style="$INP; resize: vertical; line-height: 1.5"></textarea></div>
 <button type="submit" style="position: relative; min-height: 52px; border: 0; border-radius: 999px; font-family: Outfit, system-ui, sans-serif; font-weight: 600; font-size: 16px; color: #FFFFFF; cursor: pointer; background: $BTN">Send on WhatsApp</button>
 <p style="position: relative; margin: 0; font-size: 13px; color: #A9A9B3">Opens WhatsApp with your details filled in. Or email <a class="ss-inl" href="mailto:sales@surfacestudio.in" style="text-decoration: underline">sales@surfacestudio.in</a>.</p>
@@ -456,8 +466,8 @@ class Component extends DCLogic {
 '''
 CHK='<span style="width: 22px; height: 22px; flex: none; border-radius: 50%; background: linear-gradient(135deg,#FF8A1F,#B44CE6); display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>'
 checks='\n'.join('<li style="display: flex; align-items: center; gap: 12px">%s%s</li>'%(CHK,t) for t in ['Genuine branded coatings, never diluted','Every panel tracked from cutlist to dispatch','Shade matched to your sample, RAL or NCS'])
-rep={'$NAV':navlinks,'$CHECKS':checks,'$SVC':svc,'$CLI':cli,'$SUBS':chips(['MDF','HDHMR','Solid wood','Veneer','Plywood','WPC','Laminate','Metal','Glass']),'$AN':an,'$TB':tb,'$TABS':tabs,'$PANELS':panels,'$TILES':tiles,'$SHEEN':sh,
-'$EFFECTS':chips(['Metallic','Pearl','Liquid copper &amp; bronze','Corten','Marble','Crackle','Patina','Dual-tone'],'padding: 10px 18px; border-radius: 999px; background: #1D1D23; border: 1px solid #2A2A32; font-size: 14px; color: #D6D6DC'),
+rep={'$NAV':navlinks,'$HEROIMG':BLOB['hero'],'$NAVYIMG':BLOB['navy'],'$CHECKS':checks,'$SVC':svc,'$CLI':cli,'$SUBS':chips(['MDF','HDHMR','Solid wood','Veneer','Plywood','WPC','Laminate','Metal','Glass']),'$AN':an,'$TB':tb,'$TABS':tabs,'$PANELS':panels,'$TILES':tiles,'$SHEEN':sh,
+'$EFFECTSUNUSED':chips(['Metallic','Pearl','Liquid copper &amp; bronze','Corten','Marble','Crackle','Patina','Dual-tone'],'padding: 10px 18px; border-radius: 999px; background: #1D1D23; border: 1px solid #2A2A32; font-size: 14px; color: #D6D6DC'),
 '$STEPS':st,'$FAQ':fq,'$AREAS':chips(areas,'padding: 8px 14px; border-radius: 999px; border: 1px solid #2A2A32; font-size: 13px; color: #C9C9D1'),
 '$LOGO':LOGO,'$MAPS':MAPS,'$REVIEW':REVIEW,'$EXT':EXT,'$BTN':BTN,'$STAR':STAR,'$GPROF':GPROF,'$PIN':PIN,'$WA':WA,'$WRAP':WRAP,'$EYE':EYE,'$H2':H2,'$TD':'padding: 16px 22px; border-bottom: 1px solid #2A2A32','$LBL':LBL,'$INP':INP,'$G':G}
 for k in sorted(rep,key=len,reverse=True): page=page.replace(k,rep[k])
@@ -465,17 +475,17 @@ import re
 assert not re.findall(r'\$[A-Z]{2,}',page), set(re.findall(r'\$[A-Z0-9]+',page))
 open('/home/claude/site/project/Main.dc.html','w').write(page)
 # schema
-url="https://surfacestudio.in/"; maps=H.unescape(MAPS)
+url="https://surfacestudio.co.in/"; maps=H.unescape(MAPS)
 g={"@context":"https://schema.org","@graph":[
  {"@type":"HomeAndConstructionBusiness","@id":url+"#business","name":"Surface Studio","url":url,
   "description":"PU paint and polish studio in IDA Bollaram, Hyderabad, finishing kitchens, wardrobes, doors and furniture with Sirca, ICA and Axalta wood coatings.",
-  "image":url+"images/copper-metallic-pu-finish-hyderabad.jpg","email":"sales@surfacestudio.in","telephone":"+919505969558","priceRange":"₹₹",
+  "image":url+"images/hero-pu-wardrobe.jpg","email":"sales@surfacestudio.in","telephone":"+919505969558","priceRange":"₹₹",
   "address":{"@type":"PostalAddress","streetAddress":"Bollaram Industrial Area (IDA Bollaram), Bollaram Village","addressLocality":"Hyderabad","addressRegion":"Telangana","postalCode":"502325","addressCountry":"IN"},
   "geo":{"@type":"GeoCoordinates","latitude":17.5484382,"longitude":78.343641},"hasMap":maps,
   "areaServed":[{"@type":"City","name":"Hyderabad"}]+[{"@type":"Place","name":a+", Hyderabad"} for a in areas],
   "openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:30","closes":"17:30"}],
   "brand":[{"@type":"Brand","name":n} for n in ["Sirca","ICA","Axalta"]],
-  "knowsAbout":["PU paint","PU polish","polyurethane wood coatings","Sirca wood coatings","ICA wood coatings","Axalta wood coatings","water-based wood finishes","polyester high gloss","modular kitchen shutter finishing"],
+  "knowsAbout":["PU paint","PU polish","polyurethane wood coatings","Sirca wood coatings","ICA wood coatings","Axalta wood coatings","metallic PU","pearl PU","modular kitchen shutter finishing"],
   "makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":H.unescape(s[0]),"description":H.unescape(s[1]),"areaServed":"Hyderabad"}} for s in services],
   "contactPoint":{"@type":"ContactPoint","telephone":"+919505969558","contactType":"sales","availableLanguage":["English","Hindi","Telugu"]},
   "sameAs":[maps]},
