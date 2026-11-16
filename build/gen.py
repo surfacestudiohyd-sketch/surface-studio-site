@@ -155,6 +155,7 @@ $NAV
 <p style="margin: 0 0 22px; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #FF9A3C">PU paint &amp; polish studio&nbsp;·&nbsp;Hyderabad</p>
 <h1 class="ss-h1" style="margin: 0; font-size: clamp(42px, 7vw, 84px); line-height: 1.02; font-weight: 700; letter-spacing: -0.02em; min-height: 2.050em">We Create <br><span style="$G">{{typed}}</span><span class="ss-cursor" aria-hidden="true" style="color: #B44CE6; font-weight: 300"></span></h1>
 <p style="margin: 22px 0 0; max-width: 540px; font-size: 19px; line-height: 1.55; color: #C9C9D1; font-weight: 300">We finish kitchens, wardrobes, doors and furniture in PU, using Sirca, ICA and Axalta coatings. Matte or glossy, any shade, matched to your sample.</p>
+<p style="margin: 18px 0 0; font-size: 15px; color: #F4F4F6"><span style="display: inline-block; padding: 8px 14px; border-radius: 999px; background: rgba(18,18,22,0.6); border: 1px solid #3A3A44">PU paint from <strong style="color: #FF9A3C">₹$PFROM</strong>/sq ft · PU polish from <strong style="color: #FF9A3C">₹$QFROM</strong>/sq ft <span style="color: #A9A9B3">+ GST</span></span></p>
 <div style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center">
 <a href="#instant-quote" style="display: inline-flex; align-items: center; min-height: 50px; padding: 0 30px; border-radius: 999px; font-weight: 600; font-size: 16px; color: #FFFFFF; background: $BTN">Upload cutlist for a quote</a>
 <a href="https://wa.me/919505969558"$EXT style="display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 24px; border-radius: 999px; border: 1px solid #55555F; background: rgba(18,18,22,0.5); font-weight: 600; font-size: 16px">$WA WhatsApp us</a>
@@ -162,7 +163,7 @@ $NAV
 </div>
 <ul style="margin: 56px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 12px 36px; font-size: 14px; color: #D6D6DC">
 <li style="display: flex; align-items: center; gap: 10px"><span style="width: 7px; height: 7px; border-radius: 50%; background: #FF8A1F"></span>Studio in IDA Bollaram</li>
-<li style="display: flex; align-items: center; gap: 10px"><span style="width: 7px; height: 7px; border-radius: 50%; background: #E8565E"></span>Open Mon – Sat, 9:30 am – 5:30 pm</li>
+<li style="display: flex; align-items: center; gap: 10px"><span style="width: 7px; height: 7px; border-radius: 50%; background: #E8565E"></span><span id="open-now">Open Mon – Sat, 9:30 am – 5:30 pm</span></li>
 <li style="display: flex; align-items: center; gap: 10px"><span style="width: 7px; height: 7px; border-radius: 50%; background: #B44CE6"></span>Sample panel before production</li>
 </ul>
 </div>
@@ -238,6 +239,7 @@ $SVC</div>
 <div id="cl-tone-wrap" hidden><label for="cl-tone" style="$LBL">Polish tone</label><select id="cl-tone" style="$INP; appearance: auto"><option>Natural</option><option>Coloured</option></select></div>
 <div><label for="cl-sides" style="$LBL">Sides (if not in list)</label><select id="cl-sides" style="$INP; appearance: auto"><option value="2">Both sides</option><option value="1">One side</option></select></div>
 </div>
+<div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid #2A2A32"><label for="cl-sqft" style="$LBL">No cutlist? Enter the approximate PU area (sq ft)</label><input id="cl-sqft" type="number" inputmode="decimal" min="1" max="100000" step="1" placeholder="e.g. 250" style="$INP"><p style="margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: #A9A9B3">Count every face that gets PU: length × width of each shutter, × 2 if both sides are finished.</p></div>
 <div id="cl-result" class="cl-result" aria-live="polite" hidden style="margin-top: 22px; padding-top: 22px; border-top: 1px solid #2A2A32"></div>
 <p style="margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: #8E8E99">Metallic and pearl are available with Axalta PU paint. Prefer to talk? <a href="#contact" style="color: #C9C9D1; text-decoration: underline">Send your details</a> and we will call you.</p>
 </div>
@@ -470,7 +472,7 @@ class Component extends DCLogic {
 '''
 CHK='<span style="width: 22px; height: 22px; flex: none; border-radius: 50%; background: linear-gradient(135deg,#FF8A1F,#B44CE6); display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>'
 checks='\n'.join('<li style="display: flex; align-items: center; gap: 12px">%s%s</li>'%(CHK,t) for t in ['Genuine branded coatings, never diluted','Every panel tracked from cutlist to dispatch','Shade matched to your sample, RAL or NCS'])
-rep={'$NAV':navlinks,'$HEROIMG':BLOB['hero'],'$NAVYIMG':BLOB['navy'],'$CHECKS':checks,'$SVC':svc,'$CLI':cli,'$SUBS':chips(['MDF','HDHMR','Solid wood','Veneer','Plywood','WPC','Laminate','Metal','Glass']),'$AN':an,'$TB':tb,'$TABS':tabs,'$PANELS':panels,'$TILES':tiles,'$SHEEN':sh,
+rep={'$NAV':navlinks,'$PFROM':str(PAINT_FROM),'$QFROM':str(POLISH_FROM),'$HEROIMG':BLOB['hero'],'$NAVYIMG':BLOB['navy'],'$CHECKS':checks,'$SVC':svc,'$CLI':cli,'$SUBS':chips(['MDF','HDHMR','Solid wood','Veneer','Plywood','WPC','Laminate','Metal','Glass']),'$AN':an,'$TB':tb,'$TABS':tabs,'$PANELS':panels,'$TILES':tiles,'$SHEEN':sh,
 '$EFFECTSUNUSED':chips(['Metallic','Pearl','Liquid copper &amp; bronze','Corten','Marble','Crackle','Patina','Dual-tone'],'padding: 10px 18px; border-radius: 999px; background: #1D1D23; border: 1px solid #2A2A32; font-size: 14px; color: #D6D6DC'),
 '$STEPS':st,'$FAQ':fq,'$AREAS':chips(areas,'padding: 8px 14px; border-radius: 999px; border: 1px solid #2A2A32; font-size: 13px; color: #C9C9D1'),
 '$LOGO':LOGO,'$MAPS':MAPS,'$REVIEW':REVIEW,'$EXT':EXT,'$BTN':BTN,'$STAR':STAR,'$GPROF':GPROF,'$PIN':PIN,'$WA':WA,'$WRAP':WRAP,'$EYE':EYE,'$H2':H2,'$TD':'padding: 16px 22px; border-bottom: 1px solid #2A2A32','$LBL':LBL,'$INP':INP,'$G':G}
