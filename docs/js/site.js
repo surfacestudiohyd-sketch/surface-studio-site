@@ -28,6 +28,20 @@
     });
   }
 
+  // Open / closed status in India time (studio hours Mon-Sat 9:30-17:30).
+  var on = document.getElementById('open-now');
+  if (on) {
+    try {
+      var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
+      var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
+      var day = g('weekday'), mins = (+g('hour') % 24) * 60 + (+g('minute'));
+      var isOpen = day !== 'Sun' && mins >= 570 && mins < 1050;
+      on.textContent = isOpen ? 'Open now \u00B7 until 5:30 pm' : 'Closed now \u00B7 Mon \u2013 Sat, 9:30 am \u2013 5:30 pm';
+    } catch (e) {}
+  }
+  var firstFaq = document.querySelector('.ss-faq');
+  if (firstFaq) firstFaq.setAttribute('open', '');
+
   // Mobile menu: close on link click, outside click and Escape.
   var mob = document.querySelector('.ss-mob');
   if (mob) {

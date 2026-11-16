@@ -304,6 +304,37 @@
   }
   [work, brand, finish, tone, sides].forEach(function (s) { s.addEventListener('change', render); });
 
+  /* ---------- quick estimate without a cutlist ---------- */
+  var sq = $('cl-sqft');
+  function manual() {
+    var v = parseFloat(sq.value), r = RATES.rates[rateKey()];
+    out.textContent = '';
+    if (!(v > 0) || !r) { out.hidden = true; return; }
+    v = Math.min(v, 100000);
+    var sub = v * r.sft, gst = sub * RATES.gst / 100, total = sub + gst;
+    var code = 'SSQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + hash('manual' + v + rateKey());
+    var row = function (k, val, strong) {
+      return el('div', { style: 'display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #2A2A32' + (strong ? ';font-weight:700;font-size:18px;border-bottom:0' : '') }, [el('span', { text: k, style: strong ? '' : 'color:#C9C9D1' }), el('span', { text: val })]);
+    };
+    var msg = 'Hi Surface Studio, I would like a quote.\nQuote code: ' + code + '\nFinish: ' + label() + '\nApprox. PU area: ' + num(v, 0) + ' sq ft\nEstimate: ' + inr(sub) + ' + GST = ' + inr(total);
+    [el('div', { style: 'display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px' }, [
+        el('h3', { text: 'Quick estimate', style: 'margin:0;font-size:22px' }),
+        el('span', { style: 'font-size:14px;color:#C9C9D1' }, ['Quote code ', el('strong', { text: code, style: 'color:#FF9A3C;letter-spacing:.04em' })])]),
+      el('p', { text: label(), style: 'margin:0 0 14px;font-size:14px;color:#A9A9B3' }),
+      row('PU area', num(v, 0) + ' sq ft \u00D7 ' + inr(r.sft) + ' = ' + inr(sub)),
+      row('GST ' + RATES.gst + '%', inr(gst)), row('Estimated total', inr(total), true),
+      el('p', { text: 'A rough guide from our rate card, per finished face. Narrow strips, profiles and board condition can change the final quote, which follows a panel inspection.', style: 'margin:14px 0 0;font-size:13px;line-height:1.6;color:#A9A9B3' }),
+      el('div', { style: 'display:flex;flex-wrap:wrap;gap:12px;margin-top:18px', class: 'cl-actions' }, [
+        el('a', { href: 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), target: '_blank', rel: 'noopener noreferrer', class: 'cl-btn cl-primary' }, ['Send to Surface Studio on WhatsApp'])])
+    ].forEach(function (k) { out.appendChild(k); });
+    out.hidden = false;
+  }
+  if (sq) {
+    sq.addEventListener('input', function () { state.rows = null; say('No file chosen yet.'); manual(); });
+    [work, brand, finish, tone].forEach(function (x) { x.addEventListener('change', function () { if (!state.rows && sq.value) manual(); }); });
+    fileIn.addEventListener('change', function () { sq.value = ''; });
+  }
+
   // Sample cutlist download (same columns as factory panel lists)
   var sample = $('cl-sample');
   if (sample) sample.addEventListener('click', function () {

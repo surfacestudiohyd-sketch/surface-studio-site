@@ -56,6 +56,14 @@ extra_css = """
 .ss-tab{min-height:44px;padding:0 26px;border:0;border-radius:999px;font-family:Outfit,system-ui,sans-serif;font-weight:600;font-size:15px;cursor:pointer;color:#C9C9D1;background:transparent}
 .ss-tab[aria-selected="true"]{color:#fff;background:linear-gradient(90deg,#C2410C,#A532C2)}
 [hidden]{display:none !important}
+.ss-bar{display:none}
+@media (max-width:900px){
+.ss-bar{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(18,18,22,.96);border-top:1px solid #2A2A32;backdrop-filter:blur(12px)}
+.ss-bar a{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:999px;border:1px solid #3A3A44;font-family:Outfit,system-ui,sans-serif;font-weight:600;font-size:14px;color:#F4F4F6;text-decoration:none}
+.ss-bar a.ss-bar-main{border:0;background:linear-gradient(90deg,#C2410C,#A532C2);color:#fff}
+body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+}
+@media print{.ss-bar{display:none !important}}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 """
@@ -91,6 +99,20 @@ js = r'''/* Surface Studio - site behaviour. External file so the Content-Securi
       window.open('https://wa.me/919505969558?text=' + encodeURIComponent(t), '_blank', 'noopener');
     });
   }
+
+  // Open / closed status in India time (studio hours Mon-Sat 9:30-17:30).
+  var on = document.getElementById('open-now');
+  if (on) {
+    try {
+      var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
+      var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
+      var day = g('weekday'), mins = (+g('hour') % 24) * 60 + (+g('minute'));
+      var isOpen = day !== 'Sun' && mins >= 570 && mins < 1050;
+      on.textContent = isOpen ? 'Open now \u00B7 until 5:30 pm' : 'Closed now \u00B7 Mon \u2013 Sat, 9:30 am \u2013 5:30 pm';
+    } catch (e) {}
+  }
+  var firstFaq = document.querySelector('.ss-faq');
+  if (firstFaq) firstFaq.setAttribute('open', '');
 
   // Mobile menu: close on link click, outside click and Escape.
   var mob = document.querySelector('.ss-mob');
@@ -135,7 +157,7 @@ script = '<script src="js/site.js" defer></script>\n<script src="js/quote.js" de
 
 html = ('<!doctype html>\n<html lang="en-IN">\n<head>\n' + head + helmet + '\n</head>\n<body>\n'
         + body.replace('<!-- HERO -->','<main>\n<!-- HERO -->').replace('<!-- FOOTER -->','</main>\n<!-- FOOTER -->')
-        + script + '\n</body>\n</html>\n')
+        + '<nav class="ss-bar" aria-label="Quick contact"><a href="tel:+919505969558"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.500 1.500a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg>Call</a><a href="https://wa.me/919505969558" target="_blank" rel="noopener noreferrer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.300-4A8 8 0 1 1 8 18.700z"></path></svg>WhatsApp</a><a class="ss-bar-main" href="#instant-quote">Instant quote</a></nav>\n' + script + '\n</body>\n</html>\n')
 assert '<script>' not in html, 'inline script would be blocked by the CSP'
 open(out,'w').write(html)
 print(len(html))
