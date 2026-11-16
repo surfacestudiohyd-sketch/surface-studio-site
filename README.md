@@ -11,6 +11,10 @@ PU paint & polish studio, IDA Bollaram, Hyderabad — https://surfacestudio.co.i
   - `_headers` / `.htaccess` are security headers for Cloudflare Pages / Apache (ignored by GitHub Pages)
 - `build/` — generator scripts the site is built from (`gen.py` → page, `convert.py` → static HTML, `head.html` → meta tags and schema).
 
+## Rebuild
+`python3 build/gen.py && python3 build/convert.py <canvas> docs/index.html && python3 build/pages.py docs` (paths inside the scripts point at the build workspace; adjust if run elsewhere).
+- `build/pages.py` writes the five search landing pages, `css/pages.css` and `sitemap.xml`.
+
 ## DNS (GoDaddy, surfacestudio.co.in)
 TXT `_github-pages-challenge-surfacestudiohyd-sketch` → verification code from GitHub Pages settings
 A `@` → 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153
