@@ -257,7 +257,8 @@
     drawTable(); render();
   }
   function cellInput(r, key, attrs) {
-    var i = el('input', Object.assign({ value: key === 'L' || key === 'W' ? fromMM(r[key]) : r[key], 'aria-label': attrs.label }, attrs.a || {}));
+    var v0 = key === 'L' || key === 'W' ? (r[key] > 0 ? fromMM(r[key]) : '') : r[key];
+    var i = el('input', Object.assign({ value: v0, 'aria-label': attrs.label, placeholder: key === 'L' || key === 'W' ? (unitMM() === 1 ? 'mm' : 'in') : '' }, attrs.a || {}));
     i.className = 'cl-in' + (attrs.cls ? ' ' + attrs.cls : '');
     i.addEventListener('input', function () {
       if (key === 'name') r.name = i.value.slice(0, 60);
