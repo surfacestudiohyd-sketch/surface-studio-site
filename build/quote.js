@@ -168,7 +168,7 @@
     for (var r = h.row + 1; r < rows.length && panels.length < MAX_ROWS; r++) {
       var row = rows[r] || [], g = function (k) { return h.map[k] === undefined ? '' : String(row[h.map[k]] == null ? '' : row[h.map[k]]).trim(); };
       var L = parseFloat(g('len').replace(/,/g, '')), W = parseFloat(g('wid').replace(/,/g, ''));
-      if (!(L > 0) || !(W > 0)) { if (row.join('').trim()) skipped++; continue; }
+      if (!(L > 0) || !(W > 0)) { if (g('len') || g('wid')) skipped++; continue; }
       var q = parseInt(g('qty'), 10); if (!(q > 0)) q = 1;
       panels.push({ name: g('name').slice(0, 60), mat: g('mat').slice(0, 40), thk: g('thk'), code: g('code').slice(0, 30), L: L, W: W, qty: Math.min(q, 500),
         design: /^(y|yes|true|1)$/i.test(g('design')), edges: !/^(n|no|false|0)$/i.test(g('edges')) });
@@ -282,15 +282,13 @@
       dz.addEventListener('change', function () { r.design = dz.checked; render(); });
       var del = el('button', { type: 'button', class: 'cl-x', 'aria-label': 'Remove panel ' + n, text: '×' });
       del.addEventListener('click', function () { rows.splice(idx, 1); drawTable(); render(); });
-      var amt = el('td', { class: 'cl-amt' });
-      r._amt = amt;
       body.appendChild(el('tr', null, [
         el('td', { text: String(n), class: 'cl-n' }),
         el('td', null, [cellInput(r, 'name', { label: 'Part name, panel ' + n, a: { maxlength: '60' }, cls: 'cl-name' })]),
         el('td', null, [cellInput(r, 'L', { label: 'Length, panel ' + n, a: { type: 'number', inputmode: 'decimal', min: '0', step: 'any' } })]),
         el('td', null, [cellInput(r, 'W', { label: 'Width, panel ' + n, a: { type: 'number', inputmode: 'decimal', min: '0', step: 'any' } })]),
         el('td', null, [cellInput(r, 'qty', { label: 'Quantity, panel ' + n, a: { type: 'number', inputmode: 'numeric', min: '0', step: '1' }, cls: 'cl-qty' })]),
-        el('td', null, [fs]), el('td', { class: 'cl-c' }, [ed]), el('td', { class: 'cl-c' }, [dz]), amt, el('td', null, [del])
+        el('td', null, [fs]), el('td', { class: 'cl-c' }, [ed]), el('td', { class: 'cl-c' }, [dz]), el('td', null, [del])
       ]));
     });
   }
@@ -339,25 +337,21 @@
     syncOptions();
     out.textContent = '';
     var live = rows.filter(function (p) { return p.L > 0 && p.W > 0 && p.qty > 0; });
-    if (!live.length) { out.hidden = true; rows.forEach(function (p) { if (p._amt) p._amt.textContent = ''; }); return; }
+    if (!live.length) { out.hidden = true; return; }
     var res = price();
     if (!res) { out.hidden = false; out.appendChild(el('p', { text: 'That combination is quoted on request. Send us your list on WhatsApp.' })); return; }
-    rows.forEach(function (p) { if (p._amt) p._amt.textContent = p.L > 0 && p.W > 0 && p.qty > 0 ? inr(p._amount) : ''; });
     var sig = rows.map(function (p) { return [Math.round(p.L), Math.round(p.W), p.qty, p.faces, p.edges ? 1 : 0, p.design ? 1 : 0].join(','); }).join(';');
     var code = 'SSQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + hash(sig + '|' + rateKey());
-    var row = function (k, v, strong) {
-      return el('div', { style: 'display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #2A2A32' + (strong ? ';font-weight:700;font-size:18px;border-bottom:0' : '') }, [el('span', { text: k, style: strong ? '' : 'color:#C9C9D1' }), el('span', { text: v })]);
-    };
-    var r = res.rate, kids = [
+    var r = res.rate;
+    current = { res: res, code: code };
+    var kids = [
       el('div', { style: 'display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px' }, [
-        el('h3', { text: 'Estimate', style: 'margin:0;font-size:22px' }),
+        el('h3', { text: 'Your estimate', style: 'margin:0;font-size:22px' }),
         el('span', { style: 'font-size:14px;color:#C9C9D1' }, ['Quote code ', el('strong', { text: code, style: 'color:#FF9A3C;letter-spacing:.04em' })])]),
-      el('p', { text: label() + (source ? ' — ' + source : ''), style: 'margin:0 0 14px;font-size:14px;color:#A9A9B3;word-break:break-word' }),
-      row('Panels', res.pcs + ' pcs'),
-      row('PU area', num(res.sqft, 2) + ' sq ft × ' + inr(r.sft) + ' = ' + inr(res.sqft * r.sft))];
-    if (res.rft) kids.push(row('Edges', num(res.rft, 2) + ' rft × ' + inr(r.rft) + ' = ' + inr(res.rft * r.rft)));
-    if (res.design) kids.push(row('Design work × ' + DESIGN_X + ' (' + res.designPcs + ' pcs)', '+ ' + inr(res.design)));
-    kids.push(row('Subtotal', inr(res.sub)), row('GST ' + RATES.gst + '%', inr(res.gst)), row('Estimated total', inr(res.total), true));
+      el('p', { text: label() + ' · ' + res.pcs + (res.pcs === 1 ? ' panel' : ' panels') + (source ? ' — ' + source : ''), style: 'margin:0;font-size:14px;color:#A9A9B3;word-break:break-word' }),
+      el('p', { style: 'margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px' }, [
+        el('span', { text: inr(res.total), style: 'font-size:clamp(34px,6vw,44px);font-weight:700;letter-spacing:-.01em;color:#F4F4F6' }),
+        el('span', { text: 'estimated total, incl. 18% GST', style: 'font-size:14px;color:#A9A9B3' })])];
     if (res.flags.length || skipped) {
       var ul = el('ul', { style: 'margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.6;color:#FCD34D' });
       if (skipped) ul.appendChild(el('li', { text: skipped + ' row(s) without a valid size were skipped' }));
@@ -365,28 +359,75 @@
       if (res.flags.length > 8) ul.appendChild(el('li', { text: (res.flags.length - 8) + ' more to check' }));
       kids.push(el('div', { style: 'margin-top:14px' }, [el('p', { text: 'Please check', style: 'margin:0;font-weight:600;font-size:14px' }), ul]));
     }
-    kids.push(el('p', { text: 'Estimate from our current rate card, before GST: area per finished face, edges per running foot around each panel, and design work (grooves, profiles, CNC) at ' + DESIGN_X + '× on the panels ticked. The final quote follows a panel inspection at our IDA Bollaram studio.', style: 'margin:16px 0 0;font-size:13px;line-height:1.6;color:#A9A9B3' }));
-    var msg = 'Hi Surface Studio, I would like to confirm this quote.\nQuote code: ' + code + '\nFinish: ' + label() +
-      (source ? '\nList: ' + source : '') + '\nPanels: ' + res.pcs + ' pcs\nPU area: ' + num(res.sqft, 2) + ' sq ft' +
-      (res.rft ? '\nEdges: ' + num(res.rft, 2) + ' rft' : '') + (res.design ? '\nDesign work: ' + res.designPcs + ' pcs at x' + DESIGN_X : '') +
-      '\nEstimate: ' + inr(res.sub) + ' + GST = ' + inr(res.total) +
-      (drawings.length ? '\nDrawings: ' + drawings.length + ' file(s), attaching here.' : '') + '\n(I will attach the panel list here.)';
-    var wa = el('a', { href: 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), target: '_blank', rel: 'noopener noreferrer', class: 'cl-btn cl-primary' }, ['Send to Surface Studio on WhatsApp']);
+    // Breakdown on request: ask for name and phone, then open WhatsApp with the quote code.
+    var form = el('form', { class: 'cl-lead', novalidate: '' });
+    var nm = el('input', { id: 'cl-lead-name', name: 'name', type: 'text', required: '', maxlength: '80', autocomplete: 'name', placeholder: 'Your name', class: 'cl-in' });
+    var ph = el('input', { id: 'cl-lead-phone', name: 'phone', type: 'tel', required: '', maxlength: '20', inputmode: 'tel', autocomplete: 'tel', pattern: '[0-9+()\\-\\s]{8,20}', placeholder: 'Mobile number', class: 'cl-in' });
+    nm.value = lead.name; ph.value = lead.phone;
+    nm.addEventListener('input', function () { lead.name = nm.value; }); ph.addEventListener('input', function () { lead.phone = ph.value; });
+    var err = el('p', { role: 'alert', style: 'margin:0;font-size:13px;color:#FCA5A5;min-height:0' });
+    var go = el('button', { type: 'submit', class: 'cl-btn cl-primary' }, ['Get the full breakdown on WhatsApp']);
+    form.appendChild(el('p', { text: 'Want the full breakdown (area, edges, design work and GST)? Send us your quote code and we will share it on WhatsApp.', style: 'margin:0 0 12px;font-size:14px;line-height:1.6;color:#D6D6DC' }));
+    form.appendChild(el('div', { style: 'display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px' }, [
+      el('div', null, [el('label', { for: 'cl-lead-name', text: 'Name', class: 'cl-lbl' }), nm]),
+      el('div', null, [el('label', { for: 'cl-lead-phone', text: 'Mobile', class: 'cl-lbl' }), ph])]));
+    form.appendChild(err);
+    form.appendChild(el('div', { style: 'display:flex;flex-wrap:wrap;gap:12px;margin-top:12px', class: 'cl-actions' }, [go]));
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = nm.value.trim().slice(0, 80), phone = ph.value.trim().slice(0, 20);
+      if (!name || !/^[0-9+()\-\s]{8,20}$/.test(phone)) { err.textContent = 'Please enter your name and a valid mobile number.'; (name ? ph : nm).focus(); return; }
+      err.textContent = '';
+      logQuote('whatsapp', { name: name, phone: phone });
+      var msg = 'Hi Surface Studio, please send me the full price breakdown.\nQuote code: ' + code + '\nName: ' + name + '\nMobile: ' + phone +
+        '\nFinish: ' + label() + '\nPanels: ' + res.pcs + '\nEstimated total: ' + inr(res.total) + ' incl. GST' +
+        (source ? '\nList: ' + source : '') + (drawings.length ? '\nDrawings: ' + drawings.length + ' file(s), attaching here.' : '');
+      window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    });
+    kids.push(el('div', { style: 'margin-top:20px;padding-top:18px;border-top:1px solid #2A2A32' }, [form]));
     var csv = el('button', { type: 'button', class: 'cl-btn' }, ['Download panel list (CSV)']);
     csv.addEventListener('click', downloadCSV);
     var pr = el('button', { type: 'button', class: 'cl-btn' }, ['Print / save as PDF']);
     pr.addEventListener('click', function () { window.print(); });
-    kids.push(el('div', { style: 'display:flex;flex-wrap:wrap;gap:12px;margin-top:20px', class: 'cl-actions' }, [wa, csv, pr]));
+    kids.push(el('div', { style: 'display:flex;flex-wrap:wrap;gap:12px;margin-top:14px', class: 'cl-actions' }, [csv, pr]));
+    kids.push(el('p', { text: 'Estimate from our current rate card. The final quote follows a panel inspection at our IDA Bollaram studio.' + (LOG ? ' We keep a record of quotes worked out here, and the name and mobile you send, so we can follow up on your enquiry.' : ''), style: 'margin:16px 0 0;font-size:13px;line-height:1.6;color:#A9A9B3' }));
     kids.forEach(function (k) { out.appendChild(k); });
     out.hidden = false;
+    // Save each new quote for the studio once it has stopped changing for a few seconds.
+    clearTimeout(logTimer);
+    if (code !== lastLogged) logTimer = setTimeout(function () { lastLogged = code; logQuote('calculated', {}); }, 5000);
+  }
+
+  /* ---------- quote log (Google Sheet via Apps Script, when configured) ---------- */
+  var LOG = (RATES.quote_log_endpoint || '').trim();
+  var current = null, lead = { name: '', phone: '' }, logTimer = null, lastLogged = '';
+  function logQuote(event, who) {
+    if (!LOG || !current) return;
+    var res = current.res;
+    var payload = {
+      v: 1, event: event, code: current.code, at: new Date().toISOString(),
+      name: (who.name || '').slice(0, 80), phone: (who.phone || '').slice(0, 20),
+      finish: label(), panels: res.pcs, sqft: +res.sqft.toFixed(2), rft: +res.rft.toFixed(2), designPcs: res.designPcs,
+      subtotal: Math.round(res.sub), gst: Math.round(res.gst), total: Math.round(res.total),
+      rateSqft: res.rate.sft, rateRft: res.rate.rft, source: source, drawings: drawings.length, page: location.pathname,
+      rows: rows.filter(function (p) { return p.L > 0 && p.W > 0 && p.qty > 0; }).slice(0, 400).map(function (p) {
+        return [p.name.slice(0, 60), Math.round(p.L), Math.round(p.W), p.qty, p.faces, p.edges ? 'Y' : 'N', p.design ? 'Y' : 'N',
+          +(p._sqft || 0).toFixed(2), +(p._rft || 0).toFixed(2), Math.round(p._amount || 0)];
+      })
+    };
+    var body = JSON.stringify(payload);
+    if (body.length > 90000) { payload.rows = payload.rows.slice(0, 150); body = JSON.stringify(payload); }
+    try {
+      var blob = new Blob([body], { type: 'text/plain' });
+      if (!(navigator.sendBeacon && navigator.sendBeacon(LOG, blob))) fetch(LOG, { method: 'POST', mode: 'no-cors', keepalive: true, body: body, headers: { 'Content-Type': 'text/plain' } });
+    } catch (e) { /* saving is best effort; the quote still works */ }
   }
   function csvCell(v) { v = String(v == null ? '' : v); if (/^[=+\-@]/.test(v)) v = "'" + v; return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
   function downloadCSV() {
-    var lines = [['NAME1', 'MATNAME', 'CLENG', 'CWIDTH', 'CNT', 'FACES', 'EDGES', 'DESIGN', 'BARCODE', 'SQFT', 'RFT', 'AMOUNT'].join(',')];
+    var lines = [['NAME1', 'MATNAME', 'CLENG', 'CWIDTH', 'CNT', 'FACES', 'EDGES', 'DESIGN', 'BARCODE'].join(',')];
     price();
     rows.forEach(function (p) {
-      lines.push([p.name, p.mat, Math.round(p.L), Math.round(p.W), p.qty, p.faces, p.edges ? 'Y' : 'N', p.design ? 'Y' : 'N', p.code,
-        (p._sqft || 0).toFixed(2), (p._rft || 0).toFixed(2), Math.round(p._amount || 0)].map(csvCell).join(','));
+      lines.push([p.name, p.mat, Math.round(p.L), Math.round(p.W), p.qty, p.faces, p.edges ? 'Y' : 'N', p.design ? 'Y' : 'N', p.code].map(csvCell).join(','));
     });
     var url = URL.createObjectURL(new Blob([lines.join('\n') + '\n'], { type: 'text/csv' }));
     var a = el('a', { href: url, download: 'surface-studio-panel-list.csv' });

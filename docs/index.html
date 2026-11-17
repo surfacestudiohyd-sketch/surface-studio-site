@@ -380,6 +380,7 @@ select option{background:#1D1D23;color:#F4F4F6}
 .cl-chip{display:flex;align-items:center;gap:8px;min-height:44px;color:#F4F4F6;text-decoration:none;font-size:13px;max-width:220px}.cl-chip span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cl-chip img{width:40px;height:40px;object-fit:cover;border-radius:6px}
 .cl-pdf{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:6px;background:#3A1D1D;color:#FCA5A5;font-size:11px;font-weight:700}
+.cl-lbl{display:block;margin:0 0 6px;font-size:13px;font-weight:500;color:#C9C9D1}.cl-lead .cl-in{min-height:48px;font-size:15px}
 .cl-drop:hover,.cl-drop.cl-over{border-color:#FF9A3C !important;background:#1F1A17 !important}
 #cl-drop:has(+ .cl-file:focus-visible){outline:2px solid #FF9A3C;outline-offset:3px}
 select option{background:#1D1D23;color:#F4F4F6}
@@ -389,7 +390,7 @@ select option{background:#1D1D23;color:#F4F4F6}
 .cl-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;border:1px solid #3A3A44;background:transparent;color:#F4F4F6;font-family:Outfit,system-ui,sans-serif;font-weight:600;font-size:15px;cursor:pointer;text-decoration:none}
 .cl-btn:hover{border-color:#FF9A3C;color:#F4F4F6}
 .cl-primary{border:0;background:linear-gradient(90deg,#C2410C,#A532C2);color:#fff}
-@media print{body *{visibility:hidden !important}#cl-result,#cl-result *{visibility:visible !important;color:#000 !important;background:#fff !important;border-color:#bbb !important}#cl-result{position:absolute;left:0;top:0;width:100%;padding:24px}.cl-actions{display:none !important}#cl-result details{display:block}#cl-result details>div{max-height:none !important;overflow:visible !important}}
+@media print{body *{visibility:hidden !important}#cl-result,#cl-result *{visibility:visible !important;color:#000 !important;background:#fff !important;border-color:#bbb !important}#cl-result{position:absolute;left:0;top:0;width:100%;padding:24px}.cl-actions,.cl-lead{display:none !important}#cl-result details{display:block}#cl-result details>div{max-height:none !important;overflow:visible !important}}
 .ss-desk{display:block}
 @media (max-width:900px){.ss-desk{display:none}.ss-hero-ov{background:linear-gradient(180deg,rgba(18,18,22,.68),rgba(18,18,22,.88)) !important}}
 @media (max-width:600px){.ss-shades{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:10px !important}}
@@ -568,7 +569,7 @@ html{scroll-behavior:smooth}
 <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px"><button id="cl-add" type="button" class="cl-btn">+ Add a panel</button><span id="cl-rowcount" style="font-size: 14px; color: #A9A9B3"></span></div>
 <div id="cl-table-wrap" hidden style="margin-top: 14px">
 <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 8px"><label style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; color: #C9C9D1; cursor: pointer"><input id="cl-all-design" type="checkbox" style="width: 18px; height: 18px; accent-color: #FF8A1F">Mark all as design work (× 1.5)</label><button id="cl-clear" type="button" style="border: 0; background: none; min-height: 44px; padding: 0; font-family: Outfit, system-ui, sans-serif; font-size: 14px; color: #A9A9B3; text-decoration: underline; cursor: pointer">Clear table</button></div>
-<div class="cl-scroll"><table class="cl-edit"><thead><tr><th scope="col">#</th><th scope="col">Part</th><th scope="col">Length</th><th scope="col">Width</th><th scope="col">Qty</th><th scope="col">Sides</th><th scope="col">Edges</th><th scope="col">Design</th><th scope="col">Amount</th><th scope="col"><span class="cl-sr">Remove</span></th></tr></thead><tbody id="cl-rows"></tbody></table></div>
+<div class="cl-scroll"><table class="cl-edit"><thead><tr><th scope="col">#</th><th scope="col">Part</th><th scope="col">Length</th><th scope="col">Width</th><th scope="col">Qty</th><th scope="col">Sides</th><th scope="col">Edges</th><th scope="col">Design</th><th scope="col"><span class="cl-sr">Remove</span></th></tr></thead><tbody id="cl-rows"></tbody></table></div>
 </div>
 <div id="cl-result" class="cl-result" aria-live="polite" hidden style="margin-top: 22px; padding-top: 22px; border-top: 1px solid #2A2A32"></div>
 <p style="margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: #8E8E99">Metallic and pearl are available with Axalta PU paint. Prefer to talk? <a href="#contact" style="color: #C9C9D1; text-decoration: underline">Send your details</a> and we will call you.</p>

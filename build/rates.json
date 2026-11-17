@@ -83,5 +83,6 @@
    "sft": 220.0
   }
  },
- "ai_endpoint": ""
+ "ai_endpoint": "",
+ "quote_log_endpoint": ""
 }
