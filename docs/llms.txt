@@ -22,7 +22,7 @@
 - Furniture and door refinishing in PU polish or paint
 - Instant quote: upload an .xlsx or .csv cutlist at https://surfacestudio.co.in/#instant-quote for an estimate and quote code
 
-## Rate card (per finished face, before 18% GST; strips 100 mm wide or less charged per running ft)
+## Rate card (per finished face, before 18% GST; strips up to 6 inches (152 mm) wide charged per running ft; panels with design work such as grooves, profiles or fluting are charged at 1.5x)
 - PU Paint Axalta Glossy: ₹320 per sq ft, ₹90 per running ft
 - PU Paint Axalta Matte: ₹300 per sq ft, ₹80 per running ft
 - PU Paint Axalta Metallic: ₹400 per sq ft, ₹160 per running ft
