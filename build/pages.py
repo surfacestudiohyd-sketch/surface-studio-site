@@ -5,7 +5,7 @@ from products import RATES, PAINT_FROM, POLISH_FROM, METAL_FROM
 OUT = sys.argv[1]
 URL = 'https://surfacestudio.co.in'
 MAPS = 'https://www.google.com/maps/search/?api=1&query=Surface%20Studio%20Bollaram&query_place_id=ChIJqzA2LwCNyzsREJtpRkI6IGA'
-CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src https://www.google.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; frame-src https://www.google.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
 EXT = ' target="_blank" rel="noopener noreferrer"'
 R = lambda k, u='sft': int(RATES[k][u])
 
