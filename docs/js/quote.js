@@ -5,14 +5,15 @@
   'use strict';
   var RATES = {"source":"Zoho Books item rates","gst":18,"rates":{"paint|Axalta|Glossy":{"rft":90.0,"sft":320.0},"paint|Axalta|Matte":{"rft":80.0,"sft":300.0},"paint|Axalta|Metallic":{"rft":160.0,"sft":400.0},"paint|Axalta|Pearl":{"rft":170.0,"sft":500.0},"paint|ICA|Glossy":{"rft":110.0,"sft":340.0},"paint|ICA|Matte":{"rft":100.0,"sft":320.0},"paint|Sirca|Glossy":{"rft":110.0,"sft":340.0},"paint|Sirca|Matte":{"rft":100.0,"sft":320.0},"polish|Axalta|Glossy|Coloured":{"rft":95.0,"sft":235.0},"polish|Axalta|Glossy|Natural":{"rft":90.0,"sft":230.0},"polish|Axalta|Matte|Coloured":{"rft":85.0,"sft":215.0},"polish|Axalta|Matte|Natural":{"rft":80.0,"sft":210.0},"polish|ICA|Glossy|Coloured":{"rft":95.0,"sft":245.0},"polish|ICA|Glossy|Natural":{"rft":90.0,"sft":240.0},"polish|ICA|Matte|Coloured":{"rft":85.0,"sft":225.0},"polish|ICA|Matte|Natural":{"rft":80.0,"sft":220.0},"polish|Sirca|Glossy|Coloured":{"rft":95.0,"sft":245.0},"polish|Sirca|Glossy|Natural":{"rft":90.0,"sft":240.0},"polish|Sirca|Matte|Coloured":{"rft":85.0,"sft":225.0},"polish|Sirca|Matte|Natural":{"rft":80.0,"sft":220.0}}};
   var MM2_PER_SQFT = 92903.04, MM_PER_FT = 304.8;
-  var STRIP_MM = 100;          // panels this narrow (or narrower) are charged per running foot
+  
   var MAX_BYTES = 5 * 1024 * 1024, MAX_ROWS = 3000;
   var WA = '919505969558';
 
   var $ = function (id) { return document.getElementById(id); };
   var fileIn = $('cl-file'), drop = $('cl-drop'), statusEl = $('cl-status'), out = $('cl-result');
   if (!fileIn || !out) return;
-  var work = $('cl-work'), brand = $('cl-brand'), finish = $('cl-finish'), tone = $('cl-tone'), sides = $('cl-sides');
+  var work = $('cl-work'), brand = $('cl-brand'), finish = $('cl-finish'), tone = $('cl-tone'), sides = $('cl-sides'), design = $('cl-design');
+  function dfac() { var d = parseFloat(design && design.value); return d > 1 ? d : 1; }
   var state = { rows: null, name: '', hash: '' };
 
   /* ---------- helpers ---------- */
@@ -178,13 +179,12 @@
     if (!r) return null;
     var res = { sqft: 0, rft: 0, pcs: 0, sqftPanels: 0, rftPanels: 0, flags: [], lines: [], rate: r };
     state.rows.panels.forEach(function (p, i) {
-      var f = facesFor(p), shortSide = Math.min(p.L, p.W), longSide = Math.max(p.L, p.W), line = { i: i + 1, p: p, faces: f.n };
+      var f = facesFor(p), longSide = Math.max(p.L, p.W), line = { i: i + 1, p: p, faces: f.n };
       res.pcs += p.qty;
-      if (shortSide <= STRIP_MM) {
-        line.rft = longSide / MM_PER_FT * p.qty; line.amount = line.rft * r.rft; res.rft += line.rft; res.rftPanels += p.qty;
-      } else {
-        line.sqft = p.L * p.W * p.qty * f.n / MM2_PER_SQFT; line.amount = line.sqft * r.sft; res.sqft += line.sqft; res.sqftPanels += p.qty;
-      }
+      line.sqft = p.L * p.W * p.qty * f.n / MM2_PER_SQFT;
+      line.rft = 2 * (p.L + p.W) * p.qty / MM_PER_FT;      // full perimeter of each panel
+      line.amount = line.sqft * r.sft + line.rft * r.rft;
+      res.sqft += line.sqft; res.rft += line.rft; res.sqftPanels += p.qty; res.rftPanels += p.qty;
       var mm = /(\d+)\s*MM/i.exec(p.mat), t = parseFloat(p.thk);
       if (mm && t && +mm[1] !== t) res.flags.push('Row ' + line.i + ': material says ' + mm[1] + 'mm but thickness is ' + t + 'mm');
       if (longSide > 3000) res.flags.push('Row ' + line.i + ': ' + longSide + 'mm is over 3 m, please confirm');
@@ -192,7 +192,9 @@
     });
     var maxDim = Math.max.apply(null, state.rows.panels.map(function (p) { return Math.max(p.L, p.W); }));
     if (maxDim < 150) res.flags.unshift('All sizes are under 150 - are they in mm? The calculator expects millimetres.');
-    res.sub = res.sqft * r.sft + res.rft * r.rft;
+    res.base = res.sqft * r.sft + res.rft * r.rft;
+    res.design = res.base * (dfac() - 1);
+    res.sub = res.base + res.design;
     res.gst = res.sub * RATES.gst / 100;
     res.total = res.sub + res.gst;
     return res;
@@ -221,7 +223,7 @@
     var res = price();
     out.textContent = '';
     if (!res) { out.appendChild(el('p', { text: 'That combination is quoted on request. Send us your cutlist on WhatsApp.' })); return; }
-    var opts = rateKey() + '|' + sides.value;
+    var opts = rateKey() + '|' + sides.value + '|' + dfac();
     var code = 'SSQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + hash(state.hash + opts);
     var row = function (k, v, strong) {
       return el('div', { style: 'display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #2A2A32' + (strong ? ';font-weight:700;font-size:18px;border-bottom:0' : '') }, [el('span', { text: k, style: strong ? '' : 'color:#C9C9D1' }), el('span', { text: v })]);
@@ -235,7 +237,8 @@
       el('p', { text: label() + ' — ' + state.name, style: 'margin:0 0 14px;font-size:14px;color:#A9A9B3;word-break:break-word' }),
       row('Panels', res.pcs + ' pcs (' + state.rows.panels.length + ' rows)')];
     if (res.sqftPanels) kids.push(row('PU area', num(res.sqft, 1) + ' sq ft × ' + inr(rate.sft) + ' = ' + inr(res.sqft * rate.sft)));
-    if (res.rftPanels) kids.push(row('Narrow strips (≤' + STRIP_MM + ' mm)', num(res.rft, 1) + ' rft × ' + inr(rate.rft) + ' = ' + inr(res.rft * rate.rft)));
+    if (res.rftPanels) kids.push(row('Edges (perimeter)', num(res.rft, 1) + ' rft × ' + inr(rate.rft) + ' = ' + inr(res.rft * rate.rft)));
+    if (res.design) kids.push(row('Design work × ' + dfac(), '+ ' + inr(res.design)));
     kids.push(row('Subtotal', inr(res.sub)), row('GST ' + RATES.gst + '%', inr(res.gst)), row('Estimated total', inr(res.total), true));
     if (res.flags.length || state.rows.skipped) {
       var ul = el('ul', { style: 'margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.6;color:#FCD34D' });
@@ -250,22 +253,22 @@
       tb.appendChild(el('tr', null, [
         el('td', { text: String(l.i) }), el('td', { text: l.p.name || '—' }),
         el('td', { text: l.p.L + ' × ' + l.p.W }), el('td', { text: String(l.p.qty) }),
-        el('td', { text: l.sqft !== undefined ? l.faces + (l.faces === 2 ? ' sides' : ' side') : 'strip' }),
-        el('td', { text: l.sqft !== undefined ? num(l.sqft, 2) + ' sft' : num(l.rft, 2) + ' rft' }),
+        el('td', { text: l.faces + (l.faces === 2 ? ' sides' : ' side') }),
+        el('td', { text: num(l.sqft, 2) + ' sft' }), el('td', { text: num(l.rft, 2) + ' rft' }),
         el('td', { text: inr(l.amount) })
       ]));
     });
-    var th = el('tr', null, ['#', 'Part', 'Size (mm)', 'Qty', 'Faces', 'Qty (PU)', 'Amount'].map(function (t) { return el('th', { text: t, scope: 'col' }); }));
+    var th = el('tr', null, ['#', 'Part', 'Size (mm)', 'Qty', 'Faces', 'Area', 'Edges', 'Amount'].map(function (t) { return el('th', { text: t, scope: 'col' }); }));
     var tbl = el('table', { class: 'cl-table' }, [el('thead', null, [th]), tb]);
     kids.push(el('details', { style: 'margin-top:16px' }, [
       el('summary', { text: 'Panel-by-panel breakdown', style: 'cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600' }),
       el('div', { style: 'overflow-x:auto;max-height:420px;margin-top:8px' }, [tbl]),
       res.lines.length > 400 ? el('p', { text: 'Showing the first 400 rows.', style: 'font-size:13px;color:#A9A9B3' }) : null
     ]));
-    kids.push(el('p', { text: 'This is an estimate from our current rate card (prices before GST, per finished face; panels ' + STRIP_MM + ' mm wide or less are charged per running foot). Sides follow the BSL / OSL code in the material column, otherwise your choice above. Edge painting is not included. The final quote follows a panel inspection at our IDA Bollaram studio.', style: 'margin:16px 0 0;font-size:13px;line-height:1.6;color:#A9A9B3' }));
+    kids.push(el('p', { text: 'This is an estimate from our current rate card (prices before GST, per finished face; edges are charged per running foot around each panel; design work such as grooves or profiles is 1.5×). Sides follow the BSL / OSL code in the material column, otherwise your choice above. The final quote follows a panel inspection at our IDA Bollaram studio.', style: 'margin:16px 0 0;font-size:13px;line-height:1.6;color:#A9A9B3' }));
     var msg = 'Hi Surface Studio, I would like to confirm this quote.\nQuote code: ' + code + '\nFinish: ' + label() +
       '\nCutlist: ' + state.name + '\nPanels: ' + res.pcs + ' pcs' + (res.sqftPanels ? '\nPU area: ' + num(res.sqft, 1) + ' sq ft' : '') +
-      (res.rftPanels ? '\nStrips: ' + num(res.rft, 1) + ' rft' : '') + '\nEstimate: ' + inr(res.sub) + ' + GST = ' + inr(res.total) +
+      (res.rftPanels ? '\nEdges: ' + num(res.rft, 1) + ' rft' : '') + (res.design ? '\nDesign work: x' + dfac() : '') + '\nEstimate: ' + inr(res.sub) + ' + GST = ' + inr(res.total) +
       '\n(I will attach the cutlist file here.)';
     var wa = el('a', { href: 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), target: '_blank', rel: 'noopener noreferrer', class: 'cl-btn cl-primary' }, ['Send to Surface Studio on WhatsApp']);
     var pr = el('button', { type: 'button', class: 'cl-btn' }, ['Print / save as PDF']);
@@ -302,37 +305,38 @@
     ['dragleave', 'drop'].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove('cl-over'); }); });
     drop.addEventListener('drop', function (e) { if (e.dataTransfer && e.dataTransfer.files[0]) handle(e.dataTransfer.files[0]); });
   }
-  [work, brand, finish, tone, sides].forEach(function (s) { s.addEventListener('change', render); });
+  [work, brand, finish, tone, sides, design].forEach(function (s) { if (s) s.addEventListener('change', render); });
 
   /* ---------- quick estimate without a cutlist ---------- */
-  var sq = $('cl-sqft');
+  var sq = $('cl-sqft'), rf = $('cl-rft');
   function manual() {
-    var v = parseFloat(sq.value), r = RATES.rates[rateKey()];
+    var v = Math.min(parseFloat(sq.value) || 0, 100000), l = Math.min(parseFloat(rf && rf.value) || 0, 100000), r = RATES.rates[rateKey()];
     out.textContent = '';
-    if (!(v > 0) || !r) { out.hidden = true; return; }
-    v = Math.min(v, 100000);
-    var sub = v * r.sft, gst = sub * RATES.gst / 100, total = sub + gst;
-    var code = 'SSQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + hash('manual' + v + rateKey());
+    if (!(v > 0 || l > 0) || !r) { out.hidden = true; return; }
+    var base = v * r.sft + l * r.rft, extra = base * (dfac() - 1), sub = base + extra, gst = sub * RATES.gst / 100, total = sub + gst;
+    var code = 'SSQ-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + hash('manual' + v + '|' + l + '|' + dfac() + rateKey());
     var row = function (k, val, strong) {
       return el('div', { style: 'display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #2A2A32' + (strong ? ';font-weight:700;font-size:18px;border-bottom:0' : '') }, [el('span', { text: k, style: strong ? '' : 'color:#C9C9D1' }), el('span', { text: val })]);
     };
-    var msg = 'Hi Surface Studio, I would like a quote.\nQuote code: ' + code + '\nFinish: ' + label() + '\nApprox. PU area: ' + num(v, 0) + ' sq ft\nEstimate: ' + inr(sub) + ' + GST = ' + inr(total);
-    [el('div', { style: 'display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px' }, [
+    var msg = 'Hi Surface Studio, I would like a quote.\nQuote code: ' + code + '\nFinish: ' + label() + (v ? '\nApprox. PU area: ' + num(v, 0) + ' sq ft' : '') + (l ? '\nEdges: ' + num(l, 0) + ' rft' : '') + (extra ? '\nDesign work: x' + dfac() : '') + '\nEstimate: ' + inr(sub) + ' + GST = ' + inr(total);
+    var kids = [el('div', { style: 'display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px' }, [
         el('h3', { text: 'Quick estimate', style: 'margin:0;font-size:22px' }),
         el('span', { style: 'font-size:14px;color:#C9C9D1' }, ['Quote code ', el('strong', { text: code, style: 'color:#FF9A3C;letter-spacing:.04em' })])]),
-      el('p', { text: label(), style: 'margin:0 0 14px;font-size:14px;color:#A9A9B3' }),
-      row('PU area', num(v, 0) + ' sq ft \u00D7 ' + inr(r.sft) + ' = ' + inr(sub)),
-      row('GST ' + RATES.gst + '%', inr(gst)), row('Estimated total', inr(total), true),
-      el('p', { text: 'A rough guide from our rate card, per finished face. Narrow strips, profiles and board condition can change the final quote, which follows a panel inspection.', style: 'margin:14px 0 0;font-size:13px;line-height:1.6;color:#A9A9B3' }),
+      el('p', { text: label(), style: 'margin:0 0 14px;font-size:14px;color:#A9A9B3' })];
+    if (v) kids.push(row('PU area', num(v, 0) + ' sq ft × ' + inr(r.sft) + ' = ' + inr(v * r.sft)));
+    if (l) kids.push(row('Edges', num(l, 0) + ' rft × ' + inr(r.rft) + ' = ' + inr(l * r.rft)));
+    if (extra) kids.push(row('Design work × ' + dfac(), '+ ' + inr(extra)));
+    kids.push(row('Subtotal', inr(sub)), row('GST ' + RATES.gst + '%', inr(gst)), row('Estimated total', inr(total), true),
+      el('p', { text: 'A rough guide from our rate card, per finished face. The final quote follows a panel inspection.', style: 'margin:14px 0 0;font-size:13px;line-height:1.6;color:#A9A9B3' }),
       el('div', { style: 'display:flex;flex-wrap:wrap;gap:12px;margin-top:18px', class: 'cl-actions' }, [
-        el('a', { href: 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), target: '_blank', rel: 'noopener noreferrer', class: 'cl-btn cl-primary' }, ['Send to Surface Studio on WhatsApp'])])
-    ].forEach(function (k) { out.appendChild(k); });
+        el('a', { href: 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), target: '_blank', rel: 'noopener noreferrer', class: 'cl-btn cl-primary' }, ['Send to Surface Studio on WhatsApp'])]));
+    kids.forEach(function (k) { out.appendChild(k); });
     out.hidden = false;
   }
   if (sq) {
-    sq.addEventListener('input', function () { state.rows = null; say('No file chosen yet.'); manual(); });
-    [work, brand, finish, tone].forEach(function (x) { x.addEventListener('change', function () { if (!state.rows && sq.value) manual(); }); });
-    fileIn.addEventListener('change', function () { sq.value = ''; });
+    [sq, rf].forEach(function (x) { if (x) x.addEventListener('input', function () { state.rows = null; say('No file chosen yet.'); manual(); }); });
+    [work, brand, finish, tone, design].forEach(function (x) { if (x) x.addEventListener('change', function () { if (!state.rows && (sq.value || (rf && rf.value))) manual(); }); });
+    fileIn.addEventListener('change', function () { sq.value = ''; if (rf) rf.value = ''; });
   }
 
   // Sample cutlist download (same columns as factory panel lists)

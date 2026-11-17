@@ -37,7 +37,7 @@ def ratecard(brand):
                  f'<td style="{TD}">₹{int(v["sft"])}</td><td style="{TD}; color: #A9A9B3">₹{int(v["rft"])}</td></tr>\n')
     return (f'<div style="overflow-x: auto; border: 1px solid #2A2A32; border-radius: 16px; background: #1D1D23">'
             f'<table style="width: 100%; border-collapse: collapse; font-size: 14px">'
-            f'<caption style="caption-side: bottom; padding: 10px 14px; text-align: left; font-size: 12px; color: #A9A9B3">Per finished face, before 18% GST. Strips 100 mm wide or less are charged per running foot.</caption>'
+            f'<caption style="caption-side: bottom; padding: 10px 14px; text-align: left; font-size: 12px; color: #A9A9B3">Per finished face, before 18% GST. Edges are charged per running foot, measured around each panel. Design work (grooves, profiles, fluting) is 1.5×.</caption>'
             f'<thead><tr><th scope="col" style="{TH}">{brand} finish</th><th scope="col" style="{TH}">per sq ft</th><th scope="col" style="{TH}">per rft</th></tr></thead>'
             f'<tbody>\n{rows}</tbody></table></div>')
 

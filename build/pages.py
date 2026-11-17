@@ -79,7 +79,7 @@ PAGES['pu-paint-hyderabad'] = dict(
 <h2>PU paint price per sq ft</h2>
 <p>Rates are per finished face, before 18% GST.</p>
 {table(['Brand', 'Matte', 'Glossy'], paint_rows)}
-<p class="muted">Axalta metallic is ₹{R("paint|Axalta|Metallic")} and Axalta pearl is ₹{R("paint|Axalta|Pearl")} per sq ft. Strips 100 mm wide or less are charged per running foot. See the <a href="/pu-paint-polish-price-hyderabad/">full rate card</a>.</p>
+<p class="muted">Axalta metallic is ₹{R("paint|Axalta|Metallic")} and Axalta pearl is ₹{R("paint|Axalta|Pearl")} per sq ft. Edges are charged per running foot, measured around each panel. See the <a href="/pu-paint-polish-price-hyderabad/">full rate card</a>.</p>
 <h2>How a PU painted shutter is built up</h2>
 <ol><li><strong>Board:</strong> smooth, stable MDF or HDHMR.</li><li><strong>Sanding and edge sealing:</strong> faces and edges closed off.</li><li><strong>PU sealer and primer:</strong> built up and sanded level.</li><li><strong>Colour coats:</strong> shade-matched PU.</li><li><strong>Finish coat:</strong> matte or glossy.</li></ol>
 <p>For kitchens and humid areas we recommend HDHMR over standard MDF, with every face and edge sealed.</p>
@@ -103,7 +103,7 @@ PAGES['pu-polish-hyderabad'] = dict(
 <h2>PU polish price per sq ft</h2>
 <p>Rates are per finished face, before 18% GST.</p>
 {table(['Brand', 'Natural matte', 'Natural glossy', 'Coloured matte', 'Coloured glossy'], polish_rows)}
-<p class="muted">Strips 100 mm wide or less are charged per running foot. See the <a href="/pu-paint-polish-price-hyderabad/">full rate card</a>.</p>
+<p class="muted">Edges are charged per running foot, measured around each panel. See the <a href="/pu-paint-polish-price-hyderabad/">full rate card</a>.</p>
 <h2>How PU polish is applied</h2>
 <ol><li><strong>Sanding:</strong> the grain is opened and smoothed.</li><li><strong>Filling:</strong> pores, holes and cracks are made good.</li><li><strong>PU sealer:</strong> two coats, sanded between.</li><li><strong>Clear topcoat:</strong> matte, glossy or a natural "invisible" look.</li></ol>
 <h2>PU polish vs melamine polish</h2>
@@ -123,17 +123,18 @@ PAGES['pu-paint-polish-price-hyderabad'] = dict(
     img=None,
     body=f'''<h2>Complete rate card</h2>
 {table(['Finish', 'Per sq ft', 'Per running ft'], full_rows)}
-<p class="muted">Prices are per finished face, before 18% GST. Edge painting is not included.</p>
+<p class="muted">Prices are per finished face, before 18% GST. The per running ft rate applies to panel edges.</p>
 <h2>How we measure</h2>
-<ul><li><strong>Per sq ft:</strong> length × width of each panel, for every face that gets PU.</li><li><strong>One side or both:</strong> factory lists mark panels BSL (both sides lacquered) or OSL (one side, laminate behind). Shutters are usually BSL and carcass sides OSL.</li><li><strong>Per running foot:</strong> skirtings, fillers and other strips 100 mm wide or less are charged by length instead of area.</li></ul>
+<ul><li><strong>Per sq ft:</strong> length × width of each panel, for every face that gets PU.</li><li><strong>One side or both:</strong> factory lists mark panels BSL (both sides lacquered) or OSL (one side, laminate behind). Shutters are usually BSL and carcass sides OSL.</li><li><strong>Design work:</strong> panels with grooves, profiles, fluting or other design work are charged at 1.5× the plain rate.</li><li><strong>Per running foot:</strong> the edges, measured around the full perimeter of each panel, charged in addition to the area.</li></ul>
 <h2>Worked example</h2>
-<p>A wardrobe shutter of 2100 × 450 mm is 10.17 sq ft per face. Painted on both sides in Sirca matte PU at ₹{R("paint|Sirca|Matte")} per sq ft, that is 20.34 sq ft × ₹{R("paint|Sirca|Matte")} = ₹{round(2100*450*2/92903.04*R("paint|Sirca|Matte")):,} before GST.</p>
+<p>A wardrobe shutter of 2100 × 450 mm is 10.17 sq ft per face and 16.73 running ft around its edges. Painted on both sides in Sirca matte PU, that is 20.34 sq ft × ₹{R("paint|Sirca|Matte")} + 16.73 rft × ₹{R("paint|Sirca|Matte","rft")} = ₹{round(2100*450*2/92903.04*R("paint|Sirca|Matte")+2*(2100+450)/304.8*R("paint|Sirca|Matte","rft")):,} before GST.</p>
 <h2>Get your own figure</h2>
 <p>Upload your cutlist, or type an approximate area, in the <a href="/#instant-quote">instant quote</a>. It applies this rate card and gives you a quote code to send us on WhatsApp. The final quote follows a panel inspection at the studio.</p>''',
     faq=[('What is the PU paint rate per sq ft in Hyderabad?', f'Surface Studio charges ₹{PAINT_FROM} to ₹{R("paint|Sirca|Glossy")} per sq ft for solid-colour PU paint, depending on brand and finish, per finished face and before 18% GST. Axalta metallic is ₹{R("paint|Axalta|Metallic")} and pearl is ₹{R("paint|Axalta|Pearl")}.'),
          ('What is the PU polish rate per sq ft in Hyderabad?', f'Surface Studio charges ₹{POLISH_FROM} to ₹{R("polish|Sirca|Glossy|Coloured")} per sq ft for PU polish, depending on brand, sheen and whether it is natural or coloured, before 18% GST.'),
          ('Is GST included in these prices?', 'No. All rates are before 18% GST.'),
-         ('Why are narrow strips priced per running foot?', 'Skirtings, fillers and adders 100 mm wide or less have very little area but need the same handling, so they are charged by length to keep small parts fairly priced.')])
+         ('Do designed panels cost more?', 'Yes. Panels with grooves, profiles, fluting or other design work are charged at 1.5 times the plain-panel rate, because they take more sanding and spraying.'),
+         ('What is the per running foot charge?', 'It covers the edges. Each panel edge is sanded, sealed and sprayed, so we measure the distance around every panel and charge it per running foot, in addition to the area.')])
 
 PAGES['sirca-vs-ica-vs-axalta'] = dict(
     title='Sirca vs ICA vs Axalta PU: Which to Choose? | Surface Studio Hyderabad',
@@ -174,7 +175,7 @@ PAGES['modular-panel-pu-finishing'] = dict(
 <ul><li>Panel count and sizes against the list</li><li>Thickness in the material name against the listed thickness</li><li>Edges and board condition before coating</li></ul>
 <p>Anything that does not match is flagged to you before work starts.</p>
 <h2>Rates</h2>
-<p>PU paint from ₹{PAINT_FROM} and PU polish from ₹{POLISH_FROM} per sq ft, per finished face, before 18% GST. Strips 100 mm wide or less are charged per running foot. See the <a href="/pu-paint-polish-price-hyderabad/">full rate card</a>.</p>''',
+<p>PU paint from ₹{PAINT_FROM} and PU polish from ₹{POLISH_FROM} per sq ft, per finished face, before 18% GST. Edges are charged per running foot, measured around each panel. See the <a href="/pu-paint-polish-price-hyderabad/">full rate card</a>.</p>''',
     faq=[('Which file formats can I upload for a quote?', 'Excel (.xlsx) or CSV with length, width and quantity columns. Factory lists with CLENG, CWIDTH and CNT headings work as they are. For a PDF list, send it to us on WhatsApp.'),
          ('How do you price panels finished on one side?', 'Panels marked OSL are charged for one face. Panels marked BSL are charged for both faces.'),
          ('Where is the studio?', 'Bollaram Industrial Area (IDA Bollaram), Bollaram Village, Hyderabad, Telangana 502325. Open Monday to Saturday, 9:30 am to 5:30 pm.')])
