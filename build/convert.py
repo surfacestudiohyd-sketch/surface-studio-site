@@ -152,7 +152,23 @@ os.makedirs(os.path.join(outdir, 'js'), exist_ok=True)
 open(os.path.join(outdir, 'js', 'site.js'), 'w').write(js)
 import json as _json
 _rates=_json.load(open('/home/claude/build/rates.json'))
+import shutil as _sh
+os.makedirs(os.path.join(outdir,'js','vendor'),exist_ok=True)
+for _f in ('pdf.min.mjs','pdf.worker.min.mjs'):
+    _sh.copy('/opt/npm-tools/node_modules/pdfjs-dist/legacy/build/'+_f, os.path.join(outdir,'js','vendor',_f))
+_sh.copy('/opt/npm-tools/node_modules/pdfjs-dist/LICENSE', os.path.join(outdir,'js','vendor','PDFJS-LICENSE.txt'))
 open(os.path.join(outdir,'js','quote.js'),'w').write(open('/home/claude/build/quote.js').read().replace('__RATES__',_json.dumps(_rates,separators=(',',':'))))
+import urllib.parse as _up
+_ai=_rates.get('ai_endpoint','').strip()
+_ai_origin=('%s://%s'%(_up.urlparse(_ai).scheme,_up.urlparse(_ai).netloc)) if _ai else ''
+if _ai_origin:
+    assert _ai_origin.startswith('https://'), 'ai_endpoint must be https'
+    head=head.replace("connect-src 'self'","connect-src 'self' "+_ai_origin)
+    for _hf in ('_headers','.htaccess'):
+        _p=os.path.join(outdir,_hf)
+        if os.path.exists(_p):
+            _t=open(_p).read()
+            if _ai_origin not in _t: open(_p,'w').write(_t.replace("connect-src 'self'","connect-src 'self' "+_ai_origin))
 script = '<script src="js/site.js" defer></script>\n<script src="js/quote.js" defer></script>'
 
 html = ('<!doctype html>\n<html lang="en-IN">\n<head>\n' + head + helmet + '\n</head>\n<body>\n'

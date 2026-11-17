@@ -1,0 +1,19 @@
+# Cloudflare Worker config for the Surface Studio drawing reader.
+# Deploy with:  npx wrangler deploy
+# Then add the API key as a secret:  npx wrangler secret put ANTHROPIC_API_KEY
+name = "surface-studio-drawing-reader"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+# Websites allowed to call this service (comma-separated).
+ALLOWED_ORIGINS = "https://surfacestudio.co.in,https://www.surfacestudio.co.in"
+# Optional: override the model.
+# MODEL = "claude-sonnet-5-5"
+
+# Optional abuse guard. Uncomment after checking Cloudflare's current
+# "Rate Limiting binding" docs for the exact syntax on your plan.
+# [[ratelimits]]
+# name = "RATE_LIMITER"
+# namespace_id = "1001"
+# simple = { limit = 10, period = 60 }
