@@ -161,6 +161,10 @@ open(os.path.join(outdir,'js','quote.js'),'w').write(open('/home/claude/build/qu
 import urllib.parse as _up
 _ai=_rates.get('ai_endpoint','').strip()
 _ai_origin=('%s://%s'%(_up.urlparse(_ai).scheme,_up.urlparse(_ai).netloc)) if _ai else ''
+_log=_rates.get('quote_log_endpoint','').strip()
+if _log:
+    assert _log.startswith('https://script.google.com/'), 'quote_log_endpoint must be an Apps Script /exec URL'
+    _ai_origin=(_ai_origin+' ' if _ai_origin else '')+'https://script.google.com https://script.googleusercontent.com'
 if _ai_origin:
     assert _ai_origin.startswith('https://'), 'ai_endpoint must be https'
     head=head.replace("connect-src 'self'","connect-src 'self' "+_ai_origin)
